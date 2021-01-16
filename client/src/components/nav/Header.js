@@ -1,17 +1,17 @@
-import React, { useState } from "react"
-import { Menu } from "antd"
+import React, { useState } from 'react'
+import { Menu } from 'antd'
 import {
   AppstoreFilled,
   SettingOutlined,
   UserOutlined,
   UserAddOutlined,
-} from "@ant-design/icons"
-import { Link } from "react-router-dom"
+} from '@ant-design/icons'
+import { Link } from 'react-router-dom'
 
 const { SubMenu, Item } = Menu
 
 const Header = () => {
-  const [current, setCurrent] = useState("home")
+  const [current, setCurrent] = useState('home')
 
   const handleClick = (e) => {
     // console.log(e)
@@ -24,7 +24,7 @@ const Header = () => {
       onClick={handleClick}
       selectedKeys={[current]}
       mode='horizontal'
-      style={{ backgroundColor: "#DEE1E6" }}
+      style={{ backgroundColor: '#DEE1E6' }}
     >
       <Item key='home' icon={<AppstoreFilled />}>
         <Link to='/'>Home</Link>
