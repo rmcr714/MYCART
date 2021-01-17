@@ -5,9 +5,19 @@ import App from './App'
 import reportWebVitals from './reportWebVitals'
 import 'antd/dist/antd.css' //css for ant design, always put it here globally
 
+import { createStore } from 'redux'
+import { Provider } from 'react-redux'
+import { composeWithDevTools } from 'redux-devtools-extension'
+import rootReducer from './reducers'
+
+//store
+const store = createStore(rootReducer, composeWithDevTools())
+
 ReactDOM.render(
   // <React.StrictMode>
-  <App />,
+  <Provider store={store}>
+    <App />,
+  </Provider>,
   // </React.StrictMode>,
   document.getElementById('root')
 )
