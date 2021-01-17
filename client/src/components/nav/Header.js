@@ -1,22 +1,39 @@
 import React, { useState } from 'react'
 import { Menu } from 'antd'
+import { useDispatch } from 'react-redux'
 import {
   AppstoreFilled,
   SettingOutlined,
   UserOutlined,
   UserAddOutlined,
+  LogoutOutlined,
 } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
+import firebase from 'firebase'
+import { useHistory } from 'react-router-dom' //we cant use history here as this components doesnt have a path/route in App.js
 
 const { SubMenu, Item } = Menu
 
 const Header = () => {
   const [current, setCurrent] = useState('home')
 
+  const dispatch = useDispatch()
+
+  const history = useHistory()
+
   const handleClick = (e) => {
     // console.log(e)
 
     setCurrent(e.key)
+  }
+
+  const logout = () => {
+    firebase.auth().signOut()
+    dispatch({
+      type: 'LOGOUT',
+      payload: null,
+    })
+    history.push('/login')
   }
 
   return (
@@ -39,6 +56,9 @@ const Header = () => {
       <SubMenu key='SubMenu' icon={<SettingOutlined />} title='Username'>
         <Item key='setting:1'>Option 1</Item>
         <Item key='setting:2'>Option 2</Item>
+        <Item icon={<LogoutOutlined />} onClick={logout}>
+          Logout
+        </Item>
       </SubMenu>
     </Menu>
   )
