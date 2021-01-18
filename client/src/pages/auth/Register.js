@@ -30,6 +30,7 @@ const Register = () => {
         type='email'
         className='form-control'
         value={email}
+        placeholder='Enter your email'
         onChange={(e) => {
           setEmail(e.target.value)
         }}
