@@ -5,8 +5,11 @@ import bodyParser from 'body-parser'
 import cors from 'cors'
 import connectDB from './config/db.js'
 import colors from 'colors'
-
 dotenv.config()
+
+//import routes
+import authRoutes from './routes/auth.js'
+import userRoutes from './routes/user.js'
 
 //db
 connectDB()
@@ -19,10 +22,8 @@ app.use(morgan('dev'))
 app.use(bodyParser.json())
 app.use(cors())
 
-//Routes
-app.get('/api', (req, res) => {
-  res.json({ message: 'hey u hot the node api!!!' })
-})
+//Routes middleware
+app.use('/api', authRoutes, userRoutes)
 
 //port
 const port = process.env.PORT || 8000
