@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { auth, googleAuthProvider } from '../../firebase'
 import { toast } from 'react-toastify'
 import { Button } from 'antd'
 import { GoogleOutlined, MailOutlined } from '@ant-design/icons'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 import Loader from '../../components/Loader'
 
 const Login = ({ history }) => {
@@ -11,6 +12,14 @@ const Login = ({ history }) => {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const dispatch = useDispatch()
+
+  const { user } = useSelector((state) => ({ ...state }))
+
+  useEffect(() => {
+    if (user && user.token) {
+      history.push('/')
+    }
+  }, [user])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -85,7 +94,7 @@ const Login = ({ history }) => {
       <Button
         type='primary'
         onClick={handleSubmit}
-        className='mb-3'
+        className='mb-2'
         block
         shape='round'
         icon={<MailOutlined />}
@@ -94,6 +103,9 @@ const Login = ({ history }) => {
       >
         Login with email/password
       </Button>
+      <Link to='/forgot/password' className='float-right mb-3'>
+        Forget Password ?
+      </Link>
     </form>
   )
 
