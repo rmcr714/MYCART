@@ -2,10 +2,24 @@ import React, { useState, useEffect } from 'react'
 import { auth, googleAuthProvider } from '../../firebase'
 import { toast } from 'react-toastify'
 import { Button } from 'antd'
+import axios from 'axios'
 import { GoogleOutlined, MailOutlined } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Loader from '../../components/Loader'
+
+//sending login token to backend
+const createOrUpdateUser = async (authToken) => {
+  return await axios.post(
+    `/api/create-or-update-user`,
+    {},
+    {
+      headers: {
+        authToken,
+      },
+    }
+  )
+}
 
 const Login = ({ history }) => {
   const [email, setEmail] = useState('')
@@ -29,6 +43,13 @@ const Login = ({ history }) => {
       // console.log(result)
       const { user } = result
       const idTokenResult = await user.getIdTokenResult()
+
+      //calling the function to send token to backend
+      createOrUpdateUser(idTokenResult.token)
+        .then((res) => {
+          console.log('CREATE OR UPDATE RES', res)
+        })
+        .catch((error) => {})
 
       dispatch({
         type: 'LOGGED_IN_USER',

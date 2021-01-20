@@ -6,6 +6,7 @@ const connectDB = async () => {
       useUnifiedTopology: true,
       useNewUrlParser: true,
       useCreateIndex: true,
+      useFindAndModify: false,
     })
 
     console.log(`MongoDb Connected : ${conn.connection.host}`.yellow) //here .cyan and .red.underline are used to give colors to the console.logs

@@ -5,9 +5,10 @@ const userSchema = mongoose.Schema(
   {
     name: String,
     email: { type: String, required: true, index: true },
+    picture: { type: String, default: '' },
     role: {
       type: String,
-      default: subscriber,
+      default: 'subscriber',
     },
     cart: {
       type: Array,
