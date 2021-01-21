@@ -58,7 +58,9 @@ const RegisterComplete = ({ history }) => {
               },
             })
           })
-          .catch((error) => {})
+          .catch((error) => {
+            toast.error(error.message)
+          })
 
         //Redirect
         history.push('/')

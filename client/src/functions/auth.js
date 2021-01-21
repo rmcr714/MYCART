@@ -11,3 +11,16 @@ export const createOrUpdateUser = async (authToken) => {
     }
   )
 }
+
+//getting the currently logged in user using the auth token
+export const currentUser = async (authToken) => {
+  return await axios.post(
+    `/api/current-user`,
+    {},
+    {
+      headers: {
+        authToken,
+      },
+    }
+  )
+}

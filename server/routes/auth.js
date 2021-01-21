@@ -5,8 +5,12 @@ const router = express.Router()
 import { authCheck } from '../middlewares/auth.js'
 
 //controller
-import { createOrUpdateUser } from '../controllers/authController.js'
+import {
+  createOrUpdateUser,
+  currentUser,
+} from '../controllers/authController.js'
 
 router.post('/create-or-update-user', authCheck, createOrUpdateUser)
+router.post('/current-user', authCheck, currentUser)
 
 export default router
