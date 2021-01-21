@@ -7,19 +7,7 @@ import { GoogleOutlined, MailOutlined } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Loader from '../../components/Loader'
-
-//sending login token to backend
-const createOrUpdateUser = async (authToken) => {
-  return await axios.post(
-    `/api/create-or-update-user`,
-    {},
-    {
-      headers: {
-        authToken,
-      },
-    }
-  )
-}
+import { createOrUpdateUser } from '../../functions/auth'
 
 const Login = ({ history }) => {
   const [email, setEmail] = useState('')
@@ -47,17 +35,19 @@ const Login = ({ history }) => {
       //calling the function to send token to backend
       createOrUpdateUser(idTokenResult.token)
         .then((res) => {
-          console.log('CREATE OR UPDATE RES', res)
+          dispatch({
+            type: 'LOGGED_IN_USER',
+            payload: {
+              name: res.data.name,
+              email: user.email,
+              token: idTokenResult.token,
+              role: res.data.role,
+              _id: res.data._id,
+            },
+          })
         })
         .catch((error) => {})
 
-      dispatch({
-        type: 'LOGGED_IN_USER',
-        payload: {
-          email: user.email,
-          token: idTokenResult.token,
-        },
-      })
       history.push('/')
     } catch (error) {
       toast.error(error.message)
@@ -71,13 +61,23 @@ const Login = ({ history }) => {
       .then(async (result) => {
         const { user } = result
         const idTokenResult = await user.getIdTokenResult()
-        dispatch({
-          type: 'LOGGED_IN_USER',
-          payload: {
-            email: user.email,
-            token: idTokenResult.token,
-          },
-        })
+
+        //calling the function to send token to backend
+        createOrUpdateUser(idTokenResult.token)
+          .then((res) => {
+            dispatch({
+              type: 'LOGGED_IN_USER',
+              payload: {
+                name: res.data.name,
+                email: user.email,
+                token: idTokenResult.token,
+                role: res.data.role,
+                _id: res.data._id,
+              },
+            })
+          })
+          .catch((error) => {})
+
         history.push('/')
       })
       .catch((error) => {
