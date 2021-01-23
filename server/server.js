@@ -10,6 +10,7 @@ dotenv.config()
 //import routes
 import authRoutes from './routes/auth.js'
 import userRoutes from './routes/user.js'
+import categoryRoutes from './routes/category.js'
 
 //db
 connectDB()
@@ -23,7 +24,7 @@ app.use(bodyParser.json())
 app.use(cors())
 
 //Routes middleware
-app.use('/api', authRoutes, userRoutes)
+app.use('/api', authRoutes, userRoutes, categoryRoutes)
 
 //port
 const port = process.env.PORT || 8000
