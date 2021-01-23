@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { auth, googleAuthProvider } from '../../firebase'
 import { toast } from 'react-toastify'
 import { Button } from 'antd'
-import axios from 'axios'
+
 import { GoogleOutlined, MailOutlined } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import Loader from '../../components/Loader'
+// import Loader from '../../components/Loader'
 import { createOrUpdateUser } from '../../functions/auth'
 
 const Login = ({ history }) => {
@@ -21,7 +21,7 @@ const Login = ({ history }) => {
     if (user && user.token) {
       history.push('/')
     }
-  }, [user])
+  }, [user, history])
 
   //role based redirect
   const roleBasedRedirect = (res) => {

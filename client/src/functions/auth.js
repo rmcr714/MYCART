@@ -24,3 +24,16 @@ export const currentUser = async (authToken) => {
     }
   )
 }
+
+//Check if the currently logged in user  is an adin or not using the auth token
+export const currentAdmin = async (authToken) => {
+  return await axios.post(
+    `/api/current-admin`,
+    {},
+    {
+      headers: {
+        authToken,
+      },
+    }
+  )
+}
