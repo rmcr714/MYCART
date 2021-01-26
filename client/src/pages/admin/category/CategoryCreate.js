@@ -17,7 +17,12 @@ const CategoryCreate = () => {
   const [categories, setCategories] = useState([])
   const { user } = useSelector((state) => ({ ...state }))
 
-  //Use effect
+  //search the categories
+  //step 1
+  const [keyword, setKeyword] = useState('')
+  //step 2 add an input field to type the search querys,added below
+
+  //Use effect to load all the categories in the categories collection and display them in a list
   useEffect(() => {
     loadCategories()
   }, [])
@@ -48,7 +53,7 @@ const CategoryCreate = () => {
     }
   }
 
-  //Submit
+  //Submit, creating a new category
   const handleSubmit = (e) => {
     e.preventDefault()
     setLoading(true)
@@ -87,6 +92,17 @@ const CategoryCreate = () => {
     </form>
   )
 
+  //step 3
+  //for search
+  const handleSearchChange = (e) => {
+    e.preventDefault()
+    setKeyword(e.target.value.toLowerCase())
+  }
+
+  //step 4 , pass the keyword to filter the categories array
+  // categories array looks like this [{name:'microsoft,slug:'microsoft'},{name:'Dell,slug:'dell'}] or look in categories collection in db
+  const searched = (keyword) => (c) => c.name.toLowerCase().includes(keyword)
+
   return (
     <div className='container-fluid'>
       <div className='row'>
@@ -100,9 +116,18 @@ const CategoryCreate = () => {
             <h4>Create Category</h4>
           )}
           {categoryForm()}
-
           <hr />
-          {categories.map((c) => (
+          {/* Step 2 : provide a search bar for users to enter the keyword */}
+          <input
+            type='search'
+            placeholder='Filter'
+            value={keyword}
+            onChange={handleSearchChange}
+            className='form-control mb-4'
+          />
+          {/* step 5 place the searched function here, here we are basically using the js filter method to filter
+          the array data in categories array based on the keyword typed by the user and then mapping over it */}
+          {categories.filter(searched(keyword)).map((c) => (
             <div key={c._id} className='alert alert-dark'>
               {c.name}{' '}
               <span
