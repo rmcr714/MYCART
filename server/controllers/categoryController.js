@@ -7,9 +7,14 @@ import slugify from 'slugify'
 export const create = async (req, res) => {
   try {
     const { name } = req.body
-    const category = await new Category({ name, slug: slugify(name) }).save()
+    const category = await new Category({
+      name,
+      slug: slugify(name),
+    }).save()
+
     res.json(category)
   } catch (error) {
+    // console.log(error)
     res.status(400).send('create category failed')
   }
 }
@@ -62,7 +67,7 @@ export const update = async (req, res) => {
 export const remove = async (req, res) => {
   try {
     const deleted = await Category.findOneAndDelete({ slug: req.params.slug })
-    res.json({ message: 'successfully deleted!' })
+    res.json(deleted)
   } catch (err) {
     res.status(403).send('Category delete failed')
   }

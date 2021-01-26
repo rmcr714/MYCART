@@ -11,7 +11,7 @@ export const getcategory = async (slug) => {
 }
 
 //Deleting a category
-export const createOrUpdateUser = async (authToken, slug) => {
+export const removeCategory = async (slug, authToken) => {
   return await axios.delete(`/api/category/${slug}`, {
     headers: {
       authToken,
