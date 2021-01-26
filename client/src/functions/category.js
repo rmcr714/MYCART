@@ -6,7 +6,7 @@ export const getCategories = async () => {
 }
 
 //Getting a particular category
-export const getcategory = async (slug) => {
+export const getCategory = async (slug) => {
   return await axios.get(`/api/category/${slug}`)
 }
 

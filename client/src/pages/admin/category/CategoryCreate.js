@@ -6,9 +6,7 @@ import { Link } from 'react-router-dom'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import {
   getCategories,
-  getcategory,
   removeCategory,
-  updateCategory,
   createCategory,
 } from '../../../functions/category'
 
@@ -22,7 +20,7 @@ const CategoryCreate = () => {
   //Use effect
   useEffect(() => {
     loadCategories()
-  }, [name])
+  }, [])
 
   //Load all the categories on component mount
   const loadCategories = () => {
