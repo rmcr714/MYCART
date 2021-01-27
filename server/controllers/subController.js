@@ -5,16 +5,19 @@ import slugify from 'slugify'
 //@route POST /api/sub
 //@access  Admin
 export const create = async (req, res) => {
+  console.log('Inside backend sub create')
   try {
-    const { name } = req.body
+    // console.log(req.body)
+    const { name, parent } = req.body
     const sub = await new Sub({
       name,
+      parent,
       slug: slugify(name),
     }).save()
 
     res.json(sub)
   } catch (error) {
-    // console.log(error)
+    console.log(error)
     res.status(400).send('create category failed')
   }
 }
