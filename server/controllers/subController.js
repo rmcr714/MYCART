@@ -50,12 +50,12 @@ export const read = async (req, res) => {
 //@route PUT /api/category/:slug
 //@access  Admin
 export const update = async (req, res) => {
-  const { name } = req.body
+  const { name, parent } = req.body
 
   try {
     const updated = await Sub.findOneAndUpdate(
       { slug: req.params.slug },
-      { name, slug: slugify(name) },
+      { name, slug: slugify(name), parent },
       { new: true } //this new parameter is set so that we get the updated document as response, withhout this we will get the old document before the update
     )
     res.json(updated)

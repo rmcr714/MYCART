@@ -20,10 +20,10 @@ export const removeSub = async (slug, authToken) => {
 }
 
 //Updating a sub category
-export const updateSub = async (authToken, name, slug) => {
+export const updateSub = async ({ authToken, name, parent, slug }) => {
   return await axios.put(
     `/api/sub/${slug}`,
-    { name, slug },
+    { name, parent },
     {
       headers: {
         authToken,
