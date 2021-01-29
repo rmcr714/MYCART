@@ -3,6 +3,7 @@ import AdminNav from '../../../components/nav/AdminNav'
 import { toast } from 'react-toastify'
 import { useSelector } from 'react-redux'
 import { createProduct } from '../../../functions/product'
+import { getCategories } from '../../../functions/category'
 
 const productState = {
   title: '',
@@ -23,6 +24,17 @@ const productState = {
 const ProductCreate = () => {
   //redux logged in user
   const { user } = useSelector((state) => ({ ...state }))
+
+  //get all the categories
+  useEffect(() => {
+    loadCategories()
+  }, [])
+
+  const loadCategories = () => {
+    getCategories().then((res) => {
+      setValues({ ...values, categories: res.data })
+    })
+  }
 
   const [values, setValues] = useState(productState)
 
@@ -55,9 +67,7 @@ const ProductCreate = () => {
         window.location.reload()
       })
       .catch((err) => {
-        if (err.response.status === 400) {
-          toast.error(err.response.data)
-        }
+        toast.error(err.response.data.err)
       })
   }
 
@@ -152,6 +162,23 @@ const ProductCreate = () => {
                     {c}
                   </option>
                 ))}
+              </select>
+            </div>
+            <div className='form-group'>
+              <label>Category </label>
+              <select
+                name='category'
+                className='form-control'
+                onChange={handleChange}
+                required
+              >
+                <option>Please select category</option>
+                {categories.length > 0 &&
+                  categories.map((data) => (
+                    <option value={data._id} key={data._id}>
+                      {data.name}
+                    </option>
+                  ))}
               </select>
             </div>
             <button type='submit' className='btn btn-outline-info'>
