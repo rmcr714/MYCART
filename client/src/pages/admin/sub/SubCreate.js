@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { getSubs, removeSub, createSub } from '../../../functions/sub'
-import { getCategories, removeCategory } from '../../../functions/category'
+import { getCategories } from '../../../functions/category'
 
 const SubCreate = () => {
   //States
