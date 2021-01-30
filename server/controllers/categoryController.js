@@ -1,4 +1,5 @@
 import Category from '../models/categoryModel.js'
+import Subs from '../models/subModel.js'
 import slugify from 'slugify'
 
 //@desc create a category
@@ -70,5 +71,17 @@ export const remove = async (req, res) => {
     res.json(deleted)
   } catch (err) {
     res.status(403).send('Category delete failed')
+  }
+}
+
+//@desc get all the sub categories for the passed parent category
+//@route DELETE /api/category/subs/:_id
+//@access  Public
+export const getSubs = async (req, res) => {
+  try {
+    const subs = await Subs.find({ parent: req.params._id })
+    res.json(subs)
+  } catch (err) {
+    res.status(400).send('Sub categories dont exist')
   }
 }
