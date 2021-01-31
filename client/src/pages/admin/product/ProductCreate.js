@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
+import { Select } from 'antd'
 import AdminNav from '../../../components/nav/AdminNav'
 import { toast } from 'react-toastify'
 import { useSelector } from 'react-redux'
 import { createProduct } from '../../../functions/product'
-import { getCategories } from '../../../functions/category'
-
+import { getCategories, getCategorySubs } from '../../../functions/category'
+const { Option } = Select
 const productState = {
   title: '',
   description: '',
@@ -16,7 +17,7 @@ const productState = {
   quantity: '',
   images: [],
   colors: ['Black', 'brown', 'silver', 'white', 'blue'], //options to show in dropdown so that admin can pick one
-  brands: ['Samsung', 'Microsoft', 'Apple', 'Lenovo', 'ASUS'], //options to show in dropdown so that admin can pick one
+  brands: ['Samsung', 'Microsoft', 'Apple', 'Lenovo', 'ASUS', 'DELL'], //options to show in dropdown so that admin can pick one
   color: '',
   brand: '',
 }
@@ -24,6 +25,9 @@ const productState = {
 const ProductCreate = () => {
   //redux logged in user
   const { user } = useSelector((state) => ({ ...state }))
+
+  //Storing the subcategories
+  const [subOptions, setSubOptions] = useState([])
 
   //get all the categories
   useEffect(() => {
@@ -56,6 +60,19 @@ const ProductCreate = () => {
 
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value })
+  }
+
+  //when admin selects a category a api request is made to backend to fetch all the sub-categories for that category
+  const handleCategoryChange = (e) => {
+    e.preventDefault()
+    // console.log('Clciked Category', e.target.value)
+    setValues({ ...values, subs: [], [e.target.name]: e.target.value })
+    getCategorySubs(e.target.value)
+      .then((res) => {
+        console.log('the data', res.data)
+        setSubOptions(res.data)
+      })
+      .catch((err) => {})
   }
 
   //Submit
@@ -169,7 +186,7 @@ const ProductCreate = () => {
               <select
                 name='category'
                 className='form-control'
-                onChange={handleChange}
+                onChange={handleCategoryChange}
                 required
               >
                 <option>Please select category</option>
@@ -181,6 +198,29 @@ const ProductCreate = () => {
                   ))}
               </select>
             </div>
+            {/* Multiple subcategories select element */}
+
+            {subOptions.length > 0 && (
+              <div>
+                <label>Sub Categories </label>
+                <Select
+                  mode='multiple'
+                  style={{ width: '100%' }}
+                  placeholder='Please select the subcategories'
+                  name='subs'
+                  value={subs}
+                  onChange={(value) => setValues({ ...values, subs: value })}
+                >
+                  {subOptions.length > 0 &&
+                    subOptions.map((s) => (
+                      <Option key={s._id} value={s._id}>
+                        {s.name}
+                      </Option>
+                    ))}
+                </Select>
+              </div>
+            )}
+            <br />
             <button type='submit' className='btn btn-outline-info'>
               Save
             </button>

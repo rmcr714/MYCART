@@ -44,3 +44,8 @@ export const createCategory = async (name, authToken) => {
     }
   )
 }
+
+//Getting subcategories for a particular category
+export const getCategorySubs = async (_id) => {
+  return await axios.get(`/api/category/subs/${_id}`)
+}
