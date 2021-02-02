@@ -5,6 +5,8 @@ import { toast } from 'react-toastify'
 import { useSelector } from 'react-redux'
 import { createProduct } from '../../../functions/product'
 import { getCategories, getCategorySubs } from '../../../functions/category'
+import FileUpload from '../../../components/forms/FileUpload'
+
 const { Option } = Select
 const productState = {
   title: '',
@@ -28,6 +30,8 @@ const ProductCreate = () => {
 
   //Storing the subcategories
   const [subOptions, setSubOptions] = useState([])
+
+  const [loading, setLoading] = useState(false)
 
   //get all the categories
   useEffect(() => {
@@ -97,6 +101,14 @@ const ProductCreate = () => {
         <div className='col-md-10'>
           <h4>Product create</h4>
           <hr />
+          <div className='p-3'>
+            <FileUpload
+              values={values}
+              setValues={setValues}
+              loading={loading}
+              setLoading={setLoading}
+            />
+          </div>
           <form onSubmit={handleSubmit}>
             <div className='form-group'>
               <label>Title</label>

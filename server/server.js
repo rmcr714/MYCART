@@ -13,6 +13,7 @@ import userRoutes from './routes/user.js'
 import categoryRoutes from './routes/category.js'
 import subRoutes from './routes/sub.js'
 import productRoutes from './routes/product.js'
+import cloudinary from './routes/cloudinary.js'
 
 //db
 connectDB()
@@ -22,7 +23,7 @@ const app = express()
 
 //middlewares
 app.use(morgan('dev'))
-app.use(bodyParser.json())
+app.use(bodyParser.json({ limit: '2mb' }))
 app.use(cors())
 
 //Routes middleware
@@ -32,7 +33,8 @@ app.use(
   userRoutes,
   categoryRoutes,
   subRoutes,
-  productRoutes
+  productRoutes,
+  cloudinary
 )
 
 //port
