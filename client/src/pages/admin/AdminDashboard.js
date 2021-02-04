@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import AdminNav from '../../components/nav/AdminNav'
 
 const AdminDashboard = () => {
@@ -8,7 +8,8 @@ const AdminDashboard = () => {
         <div className='col-md-2'>
           <AdminNav />
         </div>
-        <div className='col'>Admin Page</div>
+
+        <div className='col'>Admin dashboard</div>
       </div>
     </div>
   )

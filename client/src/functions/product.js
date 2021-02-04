@@ -8,3 +8,7 @@ export const createProduct = async (product, authToken) => {
     },
   })
 }
+
+export const getProductsByCount = async (count) => {
+  return await axios.get(`/api/products/${count}`)
+}

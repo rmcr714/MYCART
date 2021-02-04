@@ -19,9 +19,16 @@ export const create = async (req, res) => {
 //@desc  Fetch all the products
 //@route  GET /api/products
 //@access  public
-export const read = async (req, res) => {
+export const listAll = async (req, res) => {
   try {
     const products = await Product.find({})
+      .limit(parseInt(req.params.count))
+      .populate('category')
+      .populate('subs')
+      .sort([['createdAt', 'desc']])
+      .exec()
     res.json(products)
-  } catch (err) {}
+  } catch (err) {
+    console.log(err)
+  }
 }

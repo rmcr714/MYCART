@@ -5,10 +5,10 @@ const router = express.Router()
 import { authCheck, adminCheck } from '../middlewares/auth.js'
 
 //controller
-import { create, read } from '../controllers/productController.js'
+import { create, listAll } from '../controllers/productController.js'
 
 //routes
 router.post('/product', authCheck, adminCheck, create)
-router.get('/products', read)
+router.get('/products/:count', listAll) //return only 10 products
 
 export default router
