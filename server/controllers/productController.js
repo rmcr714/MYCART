@@ -32,3 +32,17 @@ export const listAll = async (req, res) => {
     console.log(err)
   }
 }
+
+//@desc  Delete a specific product
+//@route  DELETE /api/product/:slug
+//@access  Admin
+export const remove = async (req, res) => {
+  try {
+    const deletedProduct = await Product.findOneAndRemove({
+      slug: req.params.slug,
+    }).exec()
+    res.json(deletedProduct)
+  } catch (err) {
+    res.status(400).send('Product delete failed')
+  }
+}
