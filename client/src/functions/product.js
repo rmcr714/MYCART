@@ -22,3 +22,7 @@ export const removeProduct = async (slug, authToken) => {
     },
   })
 }
+
+export const getProduct = async (slug) => {
+  return await axios.get(`/api/product/${slug}`)
+}
