@@ -4,8 +4,8 @@ import laptop from '../../images/laptop.png'
 import { Card } from 'antd'
 const { Meta } = Card
 
-const AdminProductCard = ({ product }) => {
-  const { title, description, images } = product
+const AdminProductCard = ({ product, handleRemove }) => {
+  const { title, description, images, slug } = product
 
   return (
     <Card
@@ -18,7 +18,12 @@ const AdminProductCard = ({ product }) => {
       }
       actions={[
         <EditOutlined key='edit' className='text-primary' />,
-        <DeleteOutlined className='text-danger' />,
+        <DeleteOutlined
+          className='text-danger'
+          onClick={() => {
+            handleRemove(slug)
+          }}
+        />,
       ]}
     >
       <Meta

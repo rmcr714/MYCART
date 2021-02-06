@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import AdminNav from '../../../components/nav/AdminNav'
-import { getProductsByCount } from '../../../functions/product'
+import { useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
+import { getProductsByCount, removeProduct } from '../../../functions/product'
 import { LoadingOutlined } from '@ant-design/icons'
 import AdminProductCard from '../../../components/cards/AdminProductCard'
 
 const AllProducts = () => {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(false)
+  const { user } = useSelector((state) => ({ ...state }))
 
   useEffect(() => {
     loadAllProducts()
@@ -24,6 +27,22 @@ const AllProducts = () => {
         setLoading(false)
         console.log(err)
       })
+  }
+
+  const handleRemove = (slug) => {
+    let answer = window.confirm('Are u sure u want to delete this product')
+    if (answer) {
+      removeProduct(slug, user.token)
+        .then((res) => {
+          loadAllProducts()
+          toast.error(`${res.data.title} is deleted successfully`)
+        })
+        .catch((err) => {
+          if (err.response.status === 400) {
+            toast.error(err.response.data)
+          }
+        })
+    }
   }
 
   return (
@@ -44,7 +63,10 @@ const AllProducts = () => {
             {products.map((product) => (
               <div className='col-md-4 pb-3' key={product._id}>
                 {' '}
-                <AdminProductCard product={product} />
+                <AdminProductCard
+                  product={product}
+                  handleRemove={handleRemove}
+                />
               </div>
             ))}
           </div>
