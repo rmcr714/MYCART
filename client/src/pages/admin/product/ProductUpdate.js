@@ -33,6 +33,9 @@ const ProductUpdate = ({ match }) => {
   //Storing the subcategories
   const [subOptions, setSubOptions] = useState([])
   const [categories, setCategories] = useState([])
+  const [arrayOfSubs, setArrayOfSubs] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const {
     title,
@@ -63,9 +66,25 @@ const ProductUpdate = ({ match }) => {
   const loadProduct = () => {
     getProduct(slug)
       .then((res) => {
-        console.log('single', res)
         setValues({ ...values, ...res.data })
-        console.log('The state values are ', values)
+
+        //get all the subcategories for the fetchd product
+        getCategorySubs(res.data.category._id)
+          .then((p) => {
+            // console.log('the data', p.data)
+            setSubOptions(p.data) // on first load show all subs for the product to update
+          })
+          .catch((err) => {
+            console.log('the data', err)
+          })
+
+        let arr = []
+        res.data.subs.map((s) => {
+          arr.push(s._id)
+        })
+        console.log('Here')
+        console.log('ARR', arr)
+        setArrayOfSubs(arr) //required for ant design select to work
       })
       .catch((err) => {})
   }
@@ -78,13 +97,25 @@ const ProductUpdate = ({ match }) => {
   const handleCategoryChange = (e) => {
     e.preventDefault()
     // console.log('Clciked Category', e.target.value)
-    setValues({ ...values, subs: [], [e.target.name]: e.target.value })
+
+    setValues({ ...values, subs: [] })
+
+    setSelectedCategory(e.target.value)
+
     getCategorySubs(e.target.value)
       .then((res) => {
-        console.log('the data', res.data)
+        // console.log('changed category', res.data)
         setSubOptions(res.data)
       })
       .catch((err) => {})
+
+    //if user clicks back to the original category then show its sub categories as default
+    if (values.category._id === e.target.value) {
+      loadProduct()
+    }
+
+    //clear all sub categories if new category is chosen
+    setArrayOfSubs([])
   }
 
   const handleSubmit = (e) => {
@@ -99,9 +130,16 @@ const ProductUpdate = ({ match }) => {
         </div>
         <div className='col-md-10'>
           <h4>Product Update</h4>
-          {JSON.stringify(values)}
+          {/* {JSON.stringify(values)} */}
           <hr />
-
+          <div className='p-3'>
+            <FileUpload
+              values={values}
+              setValues={setValues}
+              loading={loading}
+              setLoading={setLoading}
+            />
+          </div>
           <form onSubmit={handleSubmit}>
             <div className='form-group'>
               <label>Title</label>
@@ -194,18 +232,34 @@ const ProductUpdate = ({ match }) => {
                 className='form-control'
                 onChange={handleCategoryChange}
                 required
+                value={selectedCategory ? selectedCategory : category._id}
               >
                 {categories.length > 0 &&
                   categories.map((data) => (
-                    <option
-                      value={data._id}
-                      key={data._id}
-                      defaultValue={category.name == data.name}
-                    >
+                    <option value={data._id} key={data._id}>
                       {data.name}
                     </option>
                   ))}
               </select>
+            </div>
+
+            <div>
+              <label>Sub Categories </label>
+              <Select
+                mode='multiple'
+                style={{ width: '100%' }}
+                placeholder='Please select the subcategories'
+                name='subs'
+                value={arrayOfSubs}
+                onChange={(value) => setArrayOfSubs(value)}
+              >
+                {subOptions.length > 0 &&
+                  subOptions.map((s) => (
+                    <Option key={s._id} value={s._id}>
+                      {s.name}
+                    </Option>
+                  ))}
+              </Select>
             </div>
 
             <br />
