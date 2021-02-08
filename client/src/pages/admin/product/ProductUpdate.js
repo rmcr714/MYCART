@@ -3,7 +3,7 @@ import { Select } from 'antd'
 import AdminNav from '../../../components/nav/AdminNav'
 import { toast } from 'react-toastify'
 import { useSelector } from 'react-redux'
-import { getProduct } from '../../../functions/product'
+import { getProduct, updateProduct } from '../../../functions/product'
 import { getCategories, getCategorySubs } from '../../../functions/category'
 import FileUpload from '../../../components/forms/FileUpload'
 import { ConsoleSqlOutlined } from '@ant-design/icons'
@@ -25,7 +25,7 @@ const productState = {
   brand: '',
 }
 
-const ProductUpdate = ({ match }) => {
+const ProductUpdate = ({ match, history }) => {
   //redux logged in user
   const { user } = useSelector((state) => ({ ...state }))
   const { slug } = match.params
@@ -107,7 +107,9 @@ const ProductUpdate = ({ match }) => {
         // console.log('changed category', res.data)
         setSubOptions(res.data)
       })
-      .catch((err) => {})
+      .catch((err) => {
+        console.log(err)
+      })
 
     //if user clicks back to the original category then show its sub categories as default
     if (values.category._id === e.target.value) {
@@ -120,6 +122,20 @@ const ProductUpdate = ({ match }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    setLoading(true)
+    values.subs = arrayOfSubs
+    values.category = selectedCategory ? selectedCategory : values.category
+    updateProduct(slug, user.token, values)
+      .then((res) => {
+        setLoading(false)
+        toast.success(`${res.data.title} is updated is successfully`)
+        history.push('/admin/dashboard')
+      })
+      .catch((err) => {
+        setLoading(false)
+        console.log(err)
+        toast.error(err.response.data.err)
+      })
   }
 
   return (

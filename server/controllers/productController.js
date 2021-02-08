@@ -58,3 +58,27 @@ export const read = async (req, res) => {
 
   res.json(product)
 }
+
+//@desc  update a specific product
+//@route  PUT /api/product/:slug
+//@access  Admin
+export const update = async (req, res) => {
+  try {
+    if (req.body.title) {
+      req.body.slug = slugify(req.body.title)
+    }
+    const updated = await Product.findOneAndUpdate(
+      { slug: req.params.slug },
+      req.body,
+      {
+        new: true,
+      }
+    ).exec()
+
+    res.json(updated)
+  } catch (err) {
+    res.status(400).json({
+      err: err.message,
+    })
+  }
+}

@@ -10,12 +10,14 @@ import {
   listAll,
   remove,
   read,
+  update,
 } from '../controllers/productController.js'
 
 //routes
 router.post('/product', authCheck, adminCheck, create)
 router.get('/products/:count', listAll) //return only count number of  products
-router.delete('/product/:slug', authCheck, adminCheck, remove)
-router.get('/product/:slug', read)
+router.delete('/product/:slug', authCheck, adminCheck, remove) //remove a product
+router.get('/product/:slug', read) //read a product based on slug
+router.put('/product/:slug', authCheck, adminCheck, update) //update the product
 
 export default router
