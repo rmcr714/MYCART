@@ -19,7 +19,7 @@ const productState = {
   quantity: '',
   images: [],
   colors: ['Black', 'brown', 'silver', 'white', 'blue'], //options to show in dropdown so that admin can pick one
-  brands: ['Samsung', 'Microsoft', 'Apple', 'Lenovo', 'ASUS', 'DELL'], //options to show in dropdown so that admin can pick one
+  brands: ['Samsung', 'Microsoft', 'Apple', 'Lenovo', 'ASUS', 'DELL','HP'], //options to show in dropdown so that admin can pick one
   color: '',
   brand: '',
 }

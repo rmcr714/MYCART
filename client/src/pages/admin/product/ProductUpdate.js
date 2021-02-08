@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux'
 import { getProduct, updateProduct } from '../../../functions/product'
 import { getCategories, getCategorySubs } from '../../../functions/category'
 import FileUpload from '../../../components/forms/FileUpload'
-import { ConsoleSqlOutlined } from '@ant-design/icons'
 
 const { Option } = Select
 
