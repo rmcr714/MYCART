@@ -34,3 +34,7 @@ export const updateProduct = async (slug, authToken, product) => {
     },
   })
 }
+
+export const getProducts = async (sort, order, limit) => {
+  return await axios.post('/api/products', { sort, order, limit })
+}

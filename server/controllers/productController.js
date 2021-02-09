@@ -82,3 +82,23 @@ export const update = async (req, res) => {
     })
   }
 }
+
+//@desc  update a specific product
+//@route  PUT /api/product/:slug
+//@access  Admin
+export const list = async (req, res) => {
+  try {
+    //sort = createdAt/updatedAt , order =  asc/desc, limt = 3,4...
+    const { sort, order, limit } = req.body
+    const products = await Product.find({})
+      .populate('category')
+      .populate('subs')
+      .sort([[sort, order]])
+      .limit(limit)
+      .exec()
+  } catch (err) {
+    res.status(400).json({
+      err: err.message,
+    })
+  }
+}
