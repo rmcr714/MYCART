@@ -12,7 +12,7 @@ const Home = () => {
     color: '#fff',
     lineHeight: '160px',
     textAlign: 'center',
-    background: '#232222',
+    background: 'black', //original #232222
   }
 
   return (
@@ -54,7 +54,7 @@ const Home = () => {
       <Carousel autoplay className='mt-1'>
         <div style={{ color: 'yellow' }}>
           <h3 style={contentStyle}>
-            WELCOME TO MY CART!! <i class='fas fa-laptop-house'></i>
+            WELCOME TO MY CART!! <i className='fas fa-laptop-house'></i>
           </h3>
         </div>
         <div>
@@ -62,12 +62,12 @@ const Home = () => {
         </div>
         <div>
           <h3 style={contentStyle}>
-            <i class='fab fa-apple fa-2x'></i>
+            <i className='fab fa-apple fa-2x'></i>
           </h3>
         </div>
         <div>
           <h3 style={contentStyle}>
-            Powered by : &nbsp;<i class='fab fa-node fa-2x'></i>
+            Powered by : &nbsp;<i className='fab fa-node fa-2x'></i>
           </h3>
         </div>
       </Carousel>

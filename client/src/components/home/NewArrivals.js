@@ -1,20 +1,29 @@
 import React, { useEffect, useState } from 'react'
-import { getProducts } from '../../functions/product'
+import { getProducts, getProductsCount } from '../../functions/product'
 import ProductCard from '../../components/cards/ProductCard'
 import LoadingCard from '../../components/cards/LoadingCard'
+import { Pagination } from 'antd'
 const NewArrivals = () => {
   //States
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(false)
+  const [productsCount, setProductsCount] = useState(0)
+  const [page, setPage] = useState(1)
 
   useEffect(() => {
     loadAllProducts()
+  }, [page])
+
+  useEffect(() => {
+    getProductsCount().then((res) => {
+      setProductsCount(res.data)
+    })
   }, [])
 
   const loadAllProducts = () => {
     setLoading(true)
     //sort,order,limit
-    getProducts('createdAt', 'desc', 100)
+    getProducts('createdAt', 'desc', page)
       .then((res) => {
         setLoading(false)
         setProducts(res.data)
@@ -29,7 +38,7 @@ const NewArrivals = () => {
     <>
       <h4 className='p-2 mt-2 mb-4 display-4 text-primary '>New Arrivals</h4>
       {loading ? (
-        <LoadingCard count={6} />
+        <LoadingCard count={3} />
       ) : (
         <div className='container'>
           <div className='row'>
@@ -41,6 +50,15 @@ const NewArrivals = () => {
           </div>
         </div>
       )}
+      <div className='row'>
+        <nav className='col-md-4 offset-md-4 text-center pt-4 p-3'>
+          <Pagination
+            defaultCurrent={1}
+            total={(productsCount / 3) * 10}
+            onChange={(value) => setPage(value)}
+          />
+        </nav>
+      </div>
     </>
   )
 }

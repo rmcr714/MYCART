@@ -107,11 +107,11 @@ export const update = async (req, res) => {
 
 //with pagination Step 2
 //@desc  Get products based on sort order and other parameters
-//@route  POST /api/product/:slug
+//@route  POST /api/products
 //@access  Public
 export const list = async (req, res) => {
   try {
-    //sort = createdAt/updatedAt , order =  asc/desc, limt = 3,4...
+    //sort = createdAt/updatedAt , order =  asc/desc, page= 1,2 ..
     const { sort, order, page } = req.body
     const currentPage = page || 1
     const perPage = 3

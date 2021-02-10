@@ -42,27 +42,44 @@ const Header = () => {
       onClick={handleClick}
       selectedKeys={[current]}
       mode='horizontal'
-      style={{ backgroundColor: '#87cefa' }} //'#DEE1E6' original color
+      style={{ backgroundColor: '#4f86f7' }} //'#DEE1E6' original color
     >
-      <Item key='home' icon={<AppstoreFilled />}>
-        <Link to='/'>Home</Link>
+      <Item key='home' icon={<AppstoreFilled style={{ color: 'white' }} />}>
+        <Link to='/' style={{ color: 'white' }}>
+          Home
+        </Link>
       </Item>
       {!user && (
-        <Item key='register' icon={<UserAddOutlined />} className='float-right'>
-          <Link to='/register'> Register</Link>
+        <Item
+          key='register'
+          icon={<UserAddOutlined style={{ color: 'white' }} />}
+          className='float-right'
+        >
+          <Link to='/register' style={{ color: 'white' }}>
+            {' '}
+            Register
+          </Link>
         </Item>
       )}
       {!user && (
-        <Item key='login' icon={<UserOutlined />} className='float-right'>
-          <Link to='/login'> Login</Link>
+        <Item
+          key='login'
+          icon={<UserOutlined style={{ color: 'white' }} />}
+          className='float-right'
+        >
+          <Link to='/login' style={{ color: 'white' }}>
+            {' '}
+            Login
+          </Link>
         </Item>
       )}
       {user && (
         <SubMenu
           key='SubMenu'
-          icon={<SettingOutlined />}
+          icon={<SettingOutlined style={{ color: 'white' }} />}
           title={user.email && user.email.split('@')[0]}
           className='float-right'
+          style={{ color: 'white' }}
         >
           {user && user.role === 'subscriber' && (
             <Item>

@@ -36,6 +36,10 @@ export const updateProduct = async (slug, authToken, product) => {
 }
 
 //Getting sorted products
-export const getProducts = async (sort, order, limit) => {
-  return await axios.post('/api/products', { sort, order, limit })
+export const getProducts = async (sort, order, page) => {
+  return await axios.post('/api/products', { sort, order, page })
+}
+
+export const getProductsCount = async () => {
+  return await axios.get('/api/products/total')
 }

@@ -55,7 +55,7 @@ const productSchema = new mongoose.Schema(
     },
     brand: {
       type: String,
-      enum: ['Samsung', 'Microsoft', 'Apple', 'Leovo', 'ASUS', 'DELL', 'HP'],
+      enum: ['Samsung', 'Microsoft', 'Apple', 'Lenovo', 'ASUS', 'DELL', 'HP'],
     },
     // ratings: [
     //   {
