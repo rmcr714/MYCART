@@ -83,9 +83,9 @@ export const update = async (req, res) => {
   }
 }
 
-//@desc  update a specific product
-//@route  PUT /api/product/:slug
-//@access  Admin
+//@desc  Get products based on sort order and other parameters
+//@route  POST /api/product/:slug
+//@access  Public
 export const list = async (req, res) => {
   try {
     //sort = createdAt/updatedAt , order =  asc/desc, limt = 3,4...
@@ -96,6 +96,7 @@ export const list = async (req, res) => {
       .sort([[sort, order]])
       .limit(limit)
       .exec()
+    res.json(products)
   } catch (err) {
     res.status(400).json({
       err: err.message,

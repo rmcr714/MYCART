@@ -1,34 +1,23 @@
-import React, { useEffect, useState } from 'react'
-import { getProductsByCount } from '../functions/product'
-import ProductCard from '../components/cards/ProductCard'
-import LoadingCard from '../components/cards/LoadingCard' //to show card loading effect when the card data is loading
-import Typewriter from 'typewriter-effect'
+import React from 'react'
+
+import NewArrivals from '../components/home/NewArrivals'
+import BestSellers from '../components/home/BestSellers'
+
+// import Typewriter from 'typewriter-effect'
+import { Carousel } from 'antd'
 
 const Home = () => {
-  //States
-  const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    loadAllProducts()
-  }, [])
-
-  const loadAllProducts = () => {
-    setLoading(true)
-    getProductsByCount(100)
-      .then((res) => {
-        setLoading(false)
-        setProducts(res.data)
-      })
-      .catch((err) => {
-        setLoading(false)
-        console.log(err)
-      })
+  const contentStyle = {
+    height: '200px',
+    color: '#fff',
+    lineHeight: '160px',
+    textAlign: 'center',
+    background: '#232222',
   }
 
   return (
     <>
-      <div className='jumbotron text-primary h1 font-weight-bold text-center'>
+      {/* <div className='jumbotron text-primary h1 font-weight-bold text-center'>
         <Typewriter
           options={{
             strings: ['MY CART ', 'BEST SELLERS', 'NEW ARRIVALS'],
@@ -36,20 +25,54 @@ const Home = () => {
             loop: true,
           }}
         />
-      </div>
-      {loading ? (
-        <LoadingCard count={6} />
-      ) : (
-        <div className='container'>
-          <div className='row'>
-            {products.map((product) => (
-              <div className='col-md-4 p-3' key={product._id}>
-                <ProductCard product={product} />
+      </div> */}
+      {/* <div className='container-fluid m-2'>
+        <Carousel autoplay style={{ backgroundColor: 'black' }}>
+          {products.length > 0 &&
+            products.map((product) => (
+              <div className='text-center'>
+                <img
+                  src={
+                    product.images && product.images.length
+                      ? product.images[0].url
+                      : laptop
+                  }
+                  style={{
+                    width: '50%',
+                    height: '350px',
+                    imageAlign: 'center',
+                    margin: '0 auto',
+                    color: 'black',
+                  }}
+                  fluid
+                />
               </div>
             ))}
-          </div>
+        </Carousel>
+      </div> */}
+
+      <Carousel autoplay className='mt-1'>
+        <div style={{ color: 'yellow' }}>
+          <h3 style={contentStyle}>
+            WELCOME TO MY CART!! <i class='fas fa-laptop-house'></i>
+          </h3>
         </div>
-      )}
+        <div>
+          <h3 style={contentStyle}>50% OFF ALL MONTH!!!</h3>
+        </div>
+        <div>
+          <h3 style={contentStyle}>
+            <i class='fab fa-apple fa-2x'></i>
+          </h3>
+        </div>
+        <div>
+          <h3 style={contentStyle}>
+            Powered by : &nbsp;<i class='fab fa-node fa-2x'></i>
+          </h3>
+        </div>
+      </Carousel>
+      <NewArrivals />
+      <BestSellers />
     </>
   )
 }
