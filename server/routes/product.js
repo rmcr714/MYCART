@@ -12,10 +12,12 @@ import {
   read,
   update,
   list,
+  productsCount,
 } from '../controllers/productController.js'
 
 //routes
 router.post('/product', authCheck, adminCheck, create)
+router.get('/products/total', productsCount) //Get the total number of products, useful for pagination
 router.get('/products/:count', listAll) //return only count number of  products
 router.delete('/product/:slug', authCheck, adminCheck, remove) //remove a product
 router.get('/product/:slug', read) //read a product based on slug
