@@ -7,6 +7,7 @@ import Home from './pages/Home'
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
 import Header from './components/nav/Header'
+import Footer from './components/nav/Footer'
 import RegisterComplete from './pages/auth/RegisterComplete'
 import ForgotPassword from './pages/auth/ForgotPassword'
 import History from './pages/user/History'
@@ -22,6 +23,7 @@ import SubUpdate from './pages/admin/sub/SubUpdate'
 import ProductCreate from './pages/admin/product/ProductCreate'
 import AllProducts from './pages/admin/product/AllProducts'
 import ProductUpdate from './pages/admin/product/ProductUpdate'
+import Product from './pages/Product'
 
 import { auth } from './firebase'
 import { useDispatch } from 'react-redux'
@@ -88,7 +90,9 @@ const App = () => {
           component={ProductUpdate}
           exact
         />
+        <Route path='/product/:slug' component={Product} exact />{' '}
       </Switch>
+      <Footer />
     </Router>
   )
 }

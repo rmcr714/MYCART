@@ -36,7 +36,9 @@ const NewArrivals = () => {
 
   return (
     <>
-      <h4 className='p-2 mt-2 mb-4 display-4 text-primary '>New Arrivals</h4>
+      <h4 className='p-2 mt-2 mb-4 ml-2 display-4 text-primary '>
+        New Arrivals
+      </h4>
       {loading ? (
         <LoadingCard count={3} />
       ) : (
