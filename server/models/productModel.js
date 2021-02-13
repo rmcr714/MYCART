@@ -57,12 +57,18 @@ const productSchema = new mongoose.Schema(
       type: String,
       enum: ['Samsung', 'Microsoft', 'Apple', 'Lenovo', 'ASUS', 'DELL', 'HP'],
     },
-    // ratings: [
-    //   {
-    //     star: Number,
-    //     postedBy: { type: ObjectId, ref: 'User' },
-    //   },
-    // ],
+    ratings: [
+      {
+        type: new mongoose.Schema(
+          {
+            star: Number,
+            postedBy: { type: ObjectId, ref: 'User' },
+            comment: String,
+          },
+          { timestamps: true }
+        ),
+      },
+    ],
   },
   {
     timestamps: true,

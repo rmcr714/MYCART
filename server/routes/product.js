@@ -13,6 +13,7 @@ import {
   update,
   list,
   productsCount,
+  productStar,
 } from '../controllers/productController.js'
 
 //routes
@@ -24,5 +25,8 @@ router.get('/product/:slug', read) //read a product based on slug
 router.put('/product/:slug', authCheck, adminCheck, update) //update the product
 
 router.post('/products', list) //list the products in ascending descending etc order based on the data passed in parameter
+
+//Rating
+router.put('/product/star/:productId', authCheck, productStar)
 
 export default router

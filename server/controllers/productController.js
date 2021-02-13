@@ -1,4 +1,5 @@
 import Product from '../models/productModel.js'
+import User from '../models/userModel.js'
 import slugify from 'slugify'
 
 //@desc   Create a new Product
@@ -137,6 +138,52 @@ export const productsCount = async (req, res) => {
   try {
     const totalProducts = await Product.find({}).estimatedDocumentCount().exec()
     res.json(totalProducts)
+  } catch (err) {
+    res.status(400).json({
+      err: err.message,
+    })
+  }
+}
+
+//@desc  Add or update rating for a product
+//@route PUT /product/star/:productId
+//@access private
+export const productStar = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.productId).exec()
+    const user = await User.findOne({ email: req.user.email }).exec()
+    const { star, comment } = req.body
+
+    //check if rating already exists for the customer or not
+    let existingRatingObject = product.ratings.find(
+      (element) => element.postedBy.toString() === user._id.toString() //=== doesnt work when comparing ids in mongoose without toString()
+    )
+
+    //if user has not given rating ,then
+    if (existingRatingObject === undefined) {
+      let ratingAdded = await Product.findByIdAndUpdate(
+        product._id,
+        {
+          $push: {
+            ratings: { star: star, comment: comment, postedBy: user._id },
+          },
+        },
+        { new: true }
+      ).exec()
+
+      res.json(ratingAdded)
+    } else {
+      //if user wants to update his rating and comment
+      const ratingUpdated = await Product.updateOne(
+        {
+          ratings: { $elemMatch: existingRatingObject },
+        },
+        { $set: { 'ratings.$.star': star, 'ratings.$.comment': comment } },
+        { new: true }
+      ).exec()
+
+      res.json(ratingUpdated)
+    }
   } catch (err) {
     res.status(400).json({
       err: err.message,
