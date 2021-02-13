@@ -5,14 +5,18 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css' // requires a loa
 import { Carousel } from 'react-responsive-carousel'
 import { HeartOutlined, ShoppingCartOutlined } from '@ant-design/icons'
 import ProductListItems from './ProductListItems'
+// import ProductRatingForm from '../forms/ProductRatingForm'
+
+import ProductListGroup from '../listgroups/ProductListGroup'
+
 const { Meta } = Card
 const { TabPane } = Tabs
 
 const SingleProduct = ({ product }) => {
-  const { title, images, description } = product
+  const { title, images, description, _id } = product
   return (
     <>
-      <div className='col-md-6 ml-4 mt-3'>
+      <div className='col-md-6 ml-4 mt-3 '>
         <Card>
           <Carousel showArrows={true} autoPlay infiniteLoop>
             {images && images.map((data) => <img src={data.url} />)}
@@ -40,6 +44,8 @@ const SingleProduct = ({ product }) => {
             </TabPane>
           </Tabs>
         </Card>
+        <hr />
+        <ProductListGroup product={product} />
       </div>
       <div className='col-md-5 ml-2 mt-3'>
         <Card
@@ -60,6 +66,8 @@ const SingleProduct = ({ product }) => {
           <hr />
           <ProductListItems product={product} />
         </Card>
+        <br />
+        <br />
       </div>
     </>
   )

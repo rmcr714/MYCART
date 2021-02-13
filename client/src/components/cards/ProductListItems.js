@@ -16,7 +16,9 @@ const ProductListItems = ({ product }) => {
       <li className='list-group-item h5 font-italic'>
         Price{' '}
         <span className='label label-default label-pill pull-xs-right '>
-          ${price}
+          ${price}{' '}
+          <span className='text-danger h6'> &nbsp;&nbsp;you save 20%</span>
+          <del>${price + (20 / 100) * price}</del>
         </span>
       </li>
 
