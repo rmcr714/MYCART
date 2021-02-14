@@ -6,6 +6,8 @@ import { Carousel } from 'react-responsive-carousel'
 import { HeartOutlined, ShoppingCartOutlined } from '@ant-design/icons'
 import ProductListItems from './ProductListItems'
 // import ProductRatingForm from '../forms/ProductRatingForm'
+import RatingModal from '../modal/RatingModal'
+import StarRating from 'react-star-ratings'
 
 import ProductListGroup from '../listgroups/ProductListGroup'
 
@@ -60,6 +62,32 @@ const SingleProduct = ({ product }) => {
               <br />
               Add to wishlist
             </Link>,
+            <RatingModal>
+              <StarRating
+                name={_id}
+                numberOfStars={5}
+                rating={2}
+                changeRating={(newRating, name) =>
+                  console.log('newRating', newRating, 'name', name)
+                }
+                isSelectable={true}
+                starRatedColor='gold'
+              />
+              <br />
+              <form className='mt-3'>
+                <div className='form-group'>
+                  <label for='comment' className='h5'>
+                    Comment
+                  </label>
+                  <hr />
+                  <textarea
+                    className='form-control'
+                    name='comment'
+                    rows='5'
+                  ></textarea>
+                </div>
+              </form>
+            </RatingModal>,
           ]}
         >
           <Meta title={title} />
