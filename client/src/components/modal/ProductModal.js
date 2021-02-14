@@ -6,7 +6,7 @@ const ProductModal = ({ price }) => {
       <div
         className='modal fade'
         id='exampleModalLong'
-        tabindex='-1'
+        tabIndex='-1'
         role='dialog'
         aria-labelledby='exampleModalLongTitle'
         aria-hidden='true'
@@ -52,7 +52,7 @@ const ProductModal = ({ price }) => {
       <div
         className='modal fade'
         id='mycartdelivered'
-        tabindex='-1'
+        tabIndex='-1'
         role='dialog'
         aria-labelledby='exampleModalLongTitle'
         aria-hidden='true'
@@ -91,7 +91,7 @@ const ProductModal = ({ price }) => {
       <div
         className='modal fade'
         id='warrantypolicy'
-        tabindex='-1'
+        tabIndex='-1'
         role='dialog'
         aria-labelledby='exampleModalLongTitle'
         aria-hidden='true'
@@ -129,7 +129,7 @@ const ProductModal = ({ price }) => {
       <div
         className='modal fade'
         id='details'
-        tabindex='-1'
+        tabIndex='-1'
         role='dialog'
         aria-labelledby='exampleModalLongTitle'
         aria-hidden='true'

@@ -8,20 +8,21 @@ import ProductListItems from './ProductListItems'
 // import ProductRatingForm from '../forms/ProductRatingForm'
 import RatingModal from '../modal/RatingModal'
 import StarRating from 'react-star-ratings'
+import ReviewsCard from './ReviewsCard'
 
 import ProductListGroup from '../listgroups/ProductListGroup'
 
 const { Meta } = Card
 const { TabPane } = Tabs
 
-const SingleProduct = ({ product }) => {
-  const { title, images, description, _id } = product
+const SingleProduct = ({ product ,onStarClick,star,userComment ,comment ,reviewSubmit}) => {
+  const { title, images, description, _id ,ratings} = product
   return (
     <>
       <div className='col-md-6 ml-4 mt-3 '>
         <Card>
           <Carousel showArrows={true} autoPlay infiniteLoop>
-            {images && images.map((data) => <img src={data.url} />)}
+            {images && images.map((data) => <img src={data.url} key = {data.public_id}/>)}
           </Carousel>
           <br />
 
@@ -62,13 +63,12 @@ const SingleProduct = ({ product }) => {
               <br />
               Add to wishlist
             </Link>,
-            <RatingModal>
+            <RatingModal reviewSubmit = {reviewSubmit}>
               <StarRating
                 name={_id}
                 numberOfStars={5}
-                rating={2}
-                changeRating={(newRating, name) =>
-                  console.log('newRating', newRating, 'name', name)
+                rating={star}
+                changeRating={onStarClick
                 }
                 isSelectable={true}
                 starRatedColor='gold'
@@ -76,7 +76,7 @@ const SingleProduct = ({ product }) => {
               <br />
               <form className='mt-3'>
                 <div className='form-group'>
-                  <label for='comment' className='h5'>
+                  <label htmlFor='comment' className='h5'>
                     Comment
                   </label>
                   <hr />
@@ -84,6 +84,8 @@ const SingleProduct = ({ product }) => {
                     className='form-control'
                     name='comment'
                     rows='5'
+                    value = {comment}
+                    onChange = {userComment}
                   ></textarea>
                 </div>
               </form>
@@ -96,6 +98,9 @@ const SingleProduct = ({ product }) => {
         </Card>
         <br />
         <br />
+        <br/>
+        
+          <ReviewsCard ratings = {ratings}/>
       </div>
     </>
   )

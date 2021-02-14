@@ -1,10 +1,22 @@
 import React, { useEffect, useState } from 'react'
-import { getProduct } from '../functions/product'
+import { getProduct,productStar } from '../functions/product'
 import SingleProduct from '../components/cards/SingleProduct'
 import { Link } from 'react-router-dom'
+import {useSelector} from 'react-redux'
+import { toast } from 'react-toastify'
 
 const Product = ({ match }) => {
+
+  //local state
   const [product, setProduct] = useState({})
+  const [star,setStar] = useState(0)
+  const [comment ,setComment] = useState('')
+ 
+
+  const {user} = useSelector((state)=>({...state}))
+
+
+
   const { slug } = match.params
 
   useEffect(() => {
@@ -17,6 +29,35 @@ const Product = ({ match }) => {
     })
   }
 
+  const onStarClick = (newRating,name)=>{
+    setStar(newRating)
+    
+  }
+
+  const userComment = (e)=>{
+    setComment(e.target.value)
+
+  }
+
+const reviewSubmit = ()=>{
+ 
+  
+  
+  productStar(product._id,star,comment,user.token)
+  .then((res)=>{
+    toast.success('Thank you for the review')
+    loadSingleProduct()
+  })
+  .catch((err)=>{
+    toast.error(err)
+  })
+
+
+
+
+}
+ 
+
   return (
     <>
       <Link to='/' className='button'>
@@ -27,7 +68,8 @@ const Product = ({ match }) => {
       </Link>
       <div className='container-fluid'>
         <div className='row pt-2'>
-          <SingleProduct product={product} />
+          <SingleProduct product={product} onStarClick = {onStarClick} 
+          star = {star} userComment = {userComment} comment = {comment} reviewSubmit = {reviewSubmit}/>
         </div>
       </div>
       <div className='row p-3'>
