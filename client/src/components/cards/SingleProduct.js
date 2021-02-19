@@ -9,20 +9,29 @@ import ProductListItems from './ProductListItems'
 import RatingModal from '../modal/RatingModal'
 import StarRating from 'react-star-ratings'
 import ReviewsCard from './ReviewsCard'
+import RatingsAverage from '../../functions/RatingsAverage'
 
 import ProductListGroup from '../listgroups/ProductListGroup'
 
 const { Meta } = Card
 const { TabPane } = Tabs
 
-const SingleProduct = ({ product ,onStarClick,star,userComment ,comment ,reviewSubmit}) => {
-  const { title, images, description, _id ,ratings} = product
+const SingleProduct = ({
+  product,
+  onStarClick,
+  star,
+  userComment,
+  comment,
+  reviewSubmit,
+}) => {
+  const { title, images, description, _id, ratings } = product
   return (
     <>
       <div className='col-md-6 ml-4 mt-3 '>
         <Card>
           <Carousel showArrows={true} autoPlay infiniteLoop>
-            {images && images.map((data) => <img src={data.url} key = {data.public_id}/>)}
+            {images &&
+              images.map((data) => <img src={data.url} key={data.public_id} />)}
           </Carousel>
           <br />
 
@@ -63,13 +72,12 @@ const SingleProduct = ({ product ,onStarClick,star,userComment ,comment ,reviewS
               <br />
               Add to wishlist
             </Link>,
-            <RatingModal reviewSubmit = {reviewSubmit}>
+            <RatingModal reviewSubmit={reviewSubmit}>
               <StarRating
                 name={_id}
                 numberOfStars={5}
                 rating={star}
-                changeRating={onStarClick
-                }
+                changeRating={onStarClick}
                 isSelectable={true}
                 starRatedColor='gold'
               />
@@ -84,8 +92,8 @@ const SingleProduct = ({ product ,onStarClick,star,userComment ,comment ,reviewS
                     className='form-control'
                     name='comment'
                     rows='5'
-                    value = {comment}
-                    onChange = {userComment}
+                    value={comment}
+                    onChange={userComment}
                   ></textarea>
                 </div>
               </form>
@@ -93,14 +101,19 @@ const SingleProduct = ({ product ,onStarClick,star,userComment ,comment ,reviewS
           ]}
         >
           <Meta title={title} />
+          <span>
+            {product && product.ratings && ratings.length > 0 ? (
+              <div className='pt-3'>{RatingsAverage(product)}</div>
+            ) : (
+              'No Ratings yet'
+            )}
+          </span>
           <hr />
           <ProductListItems product={product} />
         </Card>
+
         <br />
-        <br />
-        <br/>
-        
-          <ReviewsCard ratings = {ratings}/>
+        <ReviewsCard ratings={ratings} />
       </div>
     </>
   )

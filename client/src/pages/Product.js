@@ -1,21 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { getProduct,productStar } from '../functions/product'
+import { getProduct, productStar } from '../functions/product'
 import SingleProduct from '../components/cards/SingleProduct'
 import { Link } from 'react-router-dom'
-import {useSelector} from 'react-redux'
+import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
 const Product = ({ match }) => {
-
   //local state
   const [product, setProduct] = useState({})
-  const [star,setStar] = useState(0)
-  const [comment ,setComment] = useState('')
- 
+  const [star, setStar] = useState(0)
+  const [comment, setComment] = useState('')
 
-  const {user} = useSelector((state)=>({...state}))
-
-
+  const { user } = useSelector((state) => ({ ...state }))
 
   const { slug } = match.params
 
@@ -23,40 +19,43 @@ const Product = ({ match }) => {
     loadSingleProduct()
   }, [slug])
 
+  useEffect(() => {
+    if (product.ratings && user) {
+      let existingRatingObject = product.ratings.find(
+        (element) => element.postedBy.toString() === user._id.toString()
+      )
+
+      if (existingRatingObject) {
+        setComment(existingRatingObject.comment)
+        setStar(existingRatingObject.star)
+      }
+    }
+  }, [product, user])
+
   const loadSingleProduct = () => {
     getProduct(slug).then((res) => {
       setProduct(res.data)
     })
   }
 
-  const onStarClick = (newRating,name)=>{
+  const onStarClick = (newRating, name) => {
     setStar(newRating)
-    
   }
 
-  const userComment = (e)=>{
+  const userComment = (e) => {
     setComment(e.target.value)
-
   }
 
-const reviewSubmit = ()=>{
- 
-  
-  
-  productStar(product._id,star,comment,user.token)
-  .then((res)=>{
-    toast.success('Thank you for the review')
-    loadSingleProduct()
-  })
-  .catch((err)=>{
-    toast.error(err)
-  })
-
-
-
-
-}
- 
+  const reviewSubmit = () => {
+    productStar(product._id, star, comment, user.token)
+      .then((res) => {
+        toast.success('Thank you for the review, it will appear soon')
+        loadSingleProduct()
+      })
+      .catch((err) => {
+        toast.error(err)
+      })
+  }
 
   return (
     <>
@@ -68,8 +67,14 @@ const reviewSubmit = ()=>{
       </Link>
       <div className='container-fluid'>
         <div className='row pt-2'>
-          <SingleProduct product={product} onStarClick = {onStarClick} 
-          star = {star} userComment = {userComment} comment = {comment} reviewSubmit = {reviewSubmit}/>
+          <SingleProduct
+            product={product}
+            onStarClick={onStarClick}
+            star={star}
+            userComment={userComment}
+            comment={comment}
+            reviewSubmit={reviewSubmit}
+          />
         </div>
       </div>
       <div className='row p-3'>

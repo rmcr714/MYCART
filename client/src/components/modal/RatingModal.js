@@ -3,9 +3,9 @@ import { Modal, Button } from 'antd'
 import { toast } from 'react-toastify'
 import { useSelector } from 'react-redux'
 import { StarOutlined } from '@ant-design/icons'
-import { useHistory,useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 
-const RatingModal = ({ children ,reviewSubmit}) => {
+const RatingModal = ({ children, reviewSubmit }) => {
   const { user } = useSelector((state) => ({ ...state }))
   const [modalVisible, setModalVisible] = useState(false)
 
@@ -17,8 +17,8 @@ const RatingModal = ({ children ,reviewSubmit}) => {
       setModalVisible(true)
     } else {
       history.push({
-        pathname:'/login',
-        state:{from:`/product/${params.slug}`}
+        pathname: '/login',
+        state: { from: `/product/${params.slug}` },
       })
     }
   }
@@ -31,7 +31,7 @@ const RatingModal = ({ children ,reviewSubmit}) => {
         {user ? 'Leave a rating' : 'login to rate this product'}
       </div>
       <Modal
-        title='Leave your rating'
+        title='Leave/change your rating'
         centered
         visible={modalVisible}
         onOk={() => {

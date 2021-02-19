@@ -165,7 +165,12 @@ export const productStar = async (req, res) => {
         product._id,
         {
           $push: {
-            ratings: { star: star, comment: comment, postedBy: user._id,name:user.name },
+            ratings: {
+              star: star,
+              comment: comment,
+              postedBy: user._id,
+              name: user.name,
+            },
           },
         },
         { new: true }
