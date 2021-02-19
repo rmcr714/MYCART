@@ -195,3 +195,28 @@ export const productStar = async (req, res) => {
     })
   }
 }
+
+//@desc  Get related products for the category
+//@route GET /product/related/:productId
+//@access public
+export const listRelated = async (req, res) => {
+  try {
+    console.log('Here')
+    const product = await Product.findById(req.params.productId).exec()
+    const relatedProducts = await Product.find({
+      _id: { $ne: product._id },
+      category: product.category,
+    })
+      .limit(3)
+      .populate('category')
+      .populate('subs')
+      .exec()
+
+    res.json(relatedProducts)
+  } catch (err) {
+    console.log(err)
+    res.status(400).json({
+      err: err.message,
+    })
+  }
+}

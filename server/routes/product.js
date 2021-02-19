@@ -14,6 +14,7 @@ import {
   list,
   productsCount,
   productStar,
+  listRelated,
 } from '../controllers/productController.js'
 
 //routes
@@ -28,5 +29,8 @@ router.post('/products', list) //list the products in ascending descending etc o
 
 //Rating
 router.put('/product/star/:productId', authCheck, productStar)
+
+//fetch related products based on category
+router.get('/product/related/:productId', listRelated)
 
 export default router
