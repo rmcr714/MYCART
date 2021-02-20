@@ -55,3 +55,8 @@ export const productStar = async (productId, star, comment, authToken) => {
     }
   )
 }
+
+//get related products (based on category)
+export const getRelated = async (productId) => {
+  return axios.get(`/api/product/related/${productId}`)
+}

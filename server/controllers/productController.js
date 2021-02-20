@@ -201,7 +201,6 @@ export const productStar = async (req, res) => {
 //@access public
 export const listRelated = async (req, res) => {
   try {
-    console.log('Here')
     const product = await Product.findById(req.params.productId).exec()
     const relatedProducts = await Product.find({
       _id: { $ne: product._id },
