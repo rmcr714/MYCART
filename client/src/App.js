@@ -25,6 +25,7 @@ import AllProducts from './pages/admin/product/AllProducts'
 import ProductUpdate from './pages/admin/product/ProductUpdate'
 import Product from './pages/Product'
 import CategoryHome from './pages/category/CategoryHome'
+import SubHome from './pages/sub/SubHome'
 
 import { auth } from './firebase'
 import { useDispatch } from 'react-redux'
@@ -93,6 +94,7 @@ const App = () => {
         />
         <Route path='/product/:slug' component={Product} exact />{' '}
         <Route path='/category/:slug' component={CategoryHome} exact />
+        <Route path='/sub/:slug' component={SubHome} exact />
       </Switch>
       <Footer />
     </Router>

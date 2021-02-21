@@ -3,6 +3,7 @@ import React from 'react'
 import NewArrivals from '../components/home/NewArrivals'
 import BestSellers from '../components/home/BestSellers'
 import CategoryList from '../components/MenuCategory/CategoryList'
+import SubList from '../components/MenuSub/SubList'
 
 // import Typewriter from 'typewriter-effect'
 import { Carousel } from 'antd'
@@ -78,8 +79,11 @@ const Home = () => {
       <hr />
       <NewArrivals />
       <BestSellers />
-      <hr />
 
+      <h4 className='text-center p-3 mt-5 mb-2 display-5 jumbotron'>
+        Sub Categories
+      </h4>
+      <SubList />
       <br />
       <br />
     </>

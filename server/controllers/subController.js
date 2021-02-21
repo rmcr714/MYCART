@@ -1,4 +1,5 @@
 import Sub from '../models/subModel.js'
+import Product from '../models/productModel.js'
 import slugify from 'slugify'
 
 //@desc create a sub category
@@ -40,7 +41,11 @@ export const list = async (req, res) => {
 export const read = async (req, res) => {
   try {
     const sub = await Sub.findOne({ slug: req.params.slug }).exec()
-    res.json(sub)
+    //fetch all the products for the particular subcategory
+    const products = await Product.find({ subs: sub })
+      .populate('category')
+      .populate('subs')
+    res.json({ sub, products })
   } catch (err) {
     res.status(403).send('No Such category found')
   }
