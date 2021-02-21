@@ -196,7 +196,7 @@ export const productStar = async (req, res) => {
   }
 }
 
-//@desc  Get related products for the category
+//@desc  Get related products for the category except the current product (productId)
 //@route GET /product/related/:productId
 //@access public
 export const listRelated = async (req, res) => {

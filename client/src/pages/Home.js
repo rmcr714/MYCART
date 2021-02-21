@@ -74,7 +74,7 @@ const Home = () => {
       </Carousel>
       <CategoryList />
       <br />
-      <br />
+
       <hr />
       <NewArrivals />
       <BestSellers />
