@@ -2,6 +2,7 @@ import React from 'react'
 
 import NewArrivals from '../components/home/NewArrivals'
 import BestSellers from '../components/home/BestSellers'
+import CategoryList from '../components/MenuCategory/CategoryList'
 
 // import Typewriter from 'typewriter-effect'
 import { Carousel } from 'antd'
@@ -71,8 +72,16 @@ const Home = () => {
           </h3>
         </div>
       </Carousel>
+      <CategoryList />
+      <br />
+      <br />
+      <hr />
       <NewArrivals />
       <BestSellers />
+      <hr />
+
+      <br />
+      <br />
     </>
   )
 }
