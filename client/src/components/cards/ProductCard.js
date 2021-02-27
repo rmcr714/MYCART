@@ -11,6 +11,7 @@ const ProductCard = ({ product }) => {
   return (
     <>
       <Card
+        className='productcardhover'
         cover={
           <img
             src={images && images.length ? images[0].url : laptop}

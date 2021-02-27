@@ -146,7 +146,7 @@ export const productsCount = async (req, res) => {
 }
 
 //@desc  Add or update rating for a product
-//@route PUT /product/star/:productId
+//@route PUT /api/product/star/:productId
 //@access private
 export const productStar = async (req, res) => {
   try {
@@ -197,7 +197,7 @@ export const productStar = async (req, res) => {
 }
 
 //@desc  Get related products for the category except the current product (productId)
-//@route GET /product/related/:productId
+//@route GET /api/product/related/:productId
 //@access public
 export const listRelated = async (req, res) => {
   try {
@@ -217,5 +217,28 @@ export const listRelated = async (req, res) => {
     res.status(400).json({
       err: err.message,
     })
+  }
+}
+
+//SEARCHING AND FILTERING FUNCTIONS
+const handleQuery = async (req, res, query) => {
+  const products = await Product.find({ $text: { $search: query } })
+    .populate('category', '_id name')
+    .populate('subs', '_id name')
+    .populate('postedBy', '_id name')
+    .exec()
+
+  res.json(products)
+}
+
+//@desc  Search the products
+//@route POST api/search/filters
+//@access public
+export const searchFilters = async (req, res) => {
+  const { query } = req.body
+
+  if (query) {
+    console.log(query)
+    await handleQuery(req, res, query)
   }
 }

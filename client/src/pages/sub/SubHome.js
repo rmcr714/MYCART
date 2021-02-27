@@ -51,11 +51,7 @@ const SubHome = ({ match }) => {
             products.length > 0 &&
             products.map((p) => (
               <div className='col-md-4 pb-5 ' key={p._id}>
-                {
-                  <Card className='productcard'>
-                    <ProductCard product={p} />
-                  </Card>
-                }
+                {<ProductCard product={p} />}
               </div>
             ))}
         </div>

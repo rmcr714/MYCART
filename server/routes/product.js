@@ -15,6 +15,7 @@ import {
   productsCount,
   productStar,
   listRelated,
+  searchFilters,
 } from '../controllers/productController.js'
 
 //routes
@@ -32,5 +33,8 @@ router.put('/product/star/:productId', authCheck, productStar)
 
 //fetch related products based on category except the current product
 router.get('/product/related/:productId', listRelated)
+
+//search product functionality
+router.post('/search/filters', searchFilters)
 
 export default router
