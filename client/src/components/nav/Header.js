@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Menu } from 'antd'
+import Search from '../forms/Search'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   AppstoreFilled,
@@ -7,6 +8,7 @@ import {
   UserOutlined,
   UserAddOutlined,
   LogoutOutlined,
+  ShoppingOutlined,
 } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import firebase from 'firebase'
@@ -39,6 +41,7 @@ const Header = () => {
 
   return (
     <Menu
+      className='fixed-top'
       onClick={handleClick}
       selectedKeys={[current]}
       mode='horizontal'
@@ -47,6 +50,11 @@ const Header = () => {
       <Item key='home' icon={<AppstoreFilled style={{ color: 'white' }} />}>
         <Link to='/' style={{ color: 'white' }}>
           Home
+        </Link>
+      </Item>
+      <Item key='shop'>
+        <Link to='/shop' style={{ color: 'white' }}>
+          <i className='fas fa-shopping-bag'></i> &nbsp;Shop
         </Link>
       </Item>
       {!user && (
@@ -96,6 +104,9 @@ const Header = () => {
           </Item>
         </SubMenu>
       )}
+      <span className='float-right mr-4 mt-2 mb-2'>
+        <Search />
+      </span>
     </Menu>
   )
 }
