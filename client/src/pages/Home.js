@@ -55,20 +55,22 @@ const Home = () => {
 
       <Carousel autoplay className='mt-1'>
         <div style={{ color: 'yellow' }}>
-          <h3 style={contentStyle}>
+          <h3 style={contentStyle} className='mt-5'>
             WELCOME TO MY CART!! <i className='fas fa-laptop-house'></i>
           </h3>
         </div>
         <div>
-          <h3 style={contentStyle}>50% OFF ALL MONTH!!!</h3>
+          <h3 style={contentStyle} className='mt-5'>
+            50% OFF ALL MONTH!!!
+          </h3>
         </div>
         <div>
-          <h3 style={contentStyle}>
+          <h3 style={contentStyle} className='mt-5'>
             <i className='fab fa-apple fa-2x'></i>
           </h3>
         </div>
         <div>
-          <h3 style={contentStyle}>
+          <h3 style={contentStyle} className='mt-5'>
             Powered by : &nbsp;<i className='fab fa-node fa-2x'></i>
           </h3>
         </div>

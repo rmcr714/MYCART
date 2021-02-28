@@ -60,3 +60,10 @@ export const productStar = async (productId, star, comment, authToken) => {
 export const getRelated = async (productId) => {
   return axios.get(`/api/product/related/${productId}`)
 }
+
+//SEARCH and FILTER
+
+//get the products based on search text
+export const fetchProductsByFilter = async (arg) => {
+  return await axios.post(`/api/search/filters`, arg)
+}
