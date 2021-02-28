@@ -39,10 +39,11 @@ const ProductCard = ({ product }) => {
         />
 
         {product && product.ratings && ratings.length > 0 ? (
-          <div className='pt-3'>{RatingsAverage(product)}</div>
+          <div className='pt-3 pb-1'>{RatingsAverage(product)}</div>
         ) : (
-          <div className='pt-4'>No Ratings yet</div>
+          <div className='pt-3 pb-2'>No Ratings yet</div>
         )}
+        <h5 className='text-danger'>${product.price}</h5>
       </Card>
     </>
   )

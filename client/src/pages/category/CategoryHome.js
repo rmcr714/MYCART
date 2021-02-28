@@ -25,7 +25,7 @@ const CategoryHome = ({ match }) => {
     <>
       <Link to='/' className='button'>
         {' '}
-        <button type='button' className='btn btn-dark mt-3 ml-2'>
+        <button type='button' className='btn btn-dark mt-5 ml-2'>
           Go back
         </button>
       </Link>
