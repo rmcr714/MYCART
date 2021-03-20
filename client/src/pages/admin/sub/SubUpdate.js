@@ -64,9 +64,10 @@ const SubUpdate = ({ match, history }) => {
           onChange={(e) => setName(e.target.value)}
           autoFocus
           required
+          minLength='2'
         />
         <br />
-        <button className='btn btn-outline-primary' disabled={name.length < 2}>
+        <button className='btn btn-outline-primary' disabled={name == ''}>
           Save
         </button>
       </div>

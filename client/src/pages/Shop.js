@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { getProductsByCount, fetchProductsByFilter } from '../functions/product'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { getCategories } from '../functions/category'
 import ProductCard from '../components/cards/ProductCard'
 import { LoadingOutlined } from '@ant-design/icons'
-import { DollarOutlined } from '@ant-design/icons'
-import { Menu, Slider } from 'antd'
+import { DollarOutlined, DownSquareOutlined } from '@ant-design/icons'
+import { Menu, Slider,  Radio } from 'antd'
+
 const { SubMenu, ItemGroup } = Menu
 
 const Shop = () => {
@@ -14,8 +16,11 @@ const Shop = () => {
   const [loading, setLoading] = useState(false)
   const [price, setPrice] = useState([0, 5000])
   const [ok, setOk] = useState(false)
+  const [categories, setCategories] = useState([])
+  const [categoryId, setCategoryId] = useState('6030cbff2d203528c8da261c')
 
   const { search } = useSelector((state) => ({ ...state }))
+  const dispatch = useDispatch()
   const { text } = search
 
   //used for back button
@@ -26,6 +31,10 @@ const Shop = () => {
   //1.load default products when no search is done
   useEffect(() => {
     loadAllProducts()
+    //fetch categories
+    getCategories().then((res) => {
+      setCategories(res.data)
+    })
   }, [])
 
   //2. load products on user search input( on text change)
@@ -57,7 +66,7 @@ const Shop = () => {
       )
       setProducts(tempData)
     } else if (text == '') {
-      fetchProducts({ price })
+      fetchProducts({ price, category: categoryId })
     }
   }, [ok])
 
@@ -68,6 +77,52 @@ const Shop = () => {
     }, 2000)
   }
   //--------------till here price filter-------------------//
+
+  //4. Load products based on categories
+  //show categories in a list of checkbox
+  const showCategories = () =>
+    categories.map((c) => (
+      <div key={c._id}>
+        <Radio
+          onChange={handleCheck}
+          className='pb-2 pl-4 pr-4'
+          value={c._id}
+          name='category'
+        
+        >
+          {c.name}
+        </Radio>
+        <br />
+      </div>
+    ))
+
+    //handle category select
+  const handleCheck = (e) => {
+    console.log( e.target.value)
+    // let inTheState = [...categoryIds]
+    // let justChecked = e.target.value
+    // let alreadyThereInState = inTheState.indexOf(justChecked)
+    // if (alreadyThereInState == -1) {
+    //   inTheState.push(justChecked)
+    // } else {
+    //   //if found then pop it out
+    //   inTheState.splice(alreadyThereInState, 1)
+    // }
+    
+    if(text!=''){
+      // dispatch({ type: 'SEARCH_QUERY', payload: { text: ''} })
+      setCategoryId(e.target.value)
+     
+        const tempData = tempProducts.filter(
+          (data) => data.category._id == e.target.value
+        )
+        console.log(tempData)
+        setProducts(tempData)
+        }else{
+          setCategoryId(e.target.value)
+    fetchProducts({ price, category: e.target.value })
+    console.log(categoryId)}
+  }
 
   //to load all products (12) when just user just clicks on shop icon without any search
   const loadAllProducts = () => {
@@ -84,14 +139,14 @@ const Shop = () => {
           Go back
         </button>
       </Link>
-
       <div className='container-fluid mt-2'>
         <br />
         <div className='row'>
           <div className='col-md-3'>
             <h4>Search/filter options</h4>
             <hr />
-            <Menu defaultOpenKeys={['1', '2']} mode='inline'>
+            <Menu defaultOpenKeys={['1', '2', '3', '4']} mode='inline'>
+              {/* price */}
               <SubMenu
                 key='1'
                 title={
@@ -110,6 +165,22 @@ const Shop = () => {
                     onChange={handleSlider}
                     max='5000'
                   />
+                </div>
+              </SubMenu>
+              {/* category */}
+              <SubMenu
+                key='2'
+                title={
+                  <span className='h6'>
+                    <DownSquareOutlined />
+                    categories
+                  </span>
+                }
+              >
+                <div>
+                  <Radio.Group onChange={handleCheck} defaultValue={categoryId}  >
+                    {showCategories()}
+                  </Radio.Group>
                 </div>
               </SubMenu>
             </Menu>

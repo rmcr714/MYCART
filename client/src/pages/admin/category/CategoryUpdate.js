@@ -53,9 +53,10 @@ const CategoryUpdate = ({ history, match }) => {
           onChange={(e) => setName(e.target.value)}
           autoFocus
           required
+          minLength='4'
         />
         <br />
-        <button className='btn btn-outline-primary' disabled={name.length < 2}>
+        <button className='btn btn-outline-primary' disabled={name == ''}>
           Save
         </button>
       </div>
@@ -63,7 +64,7 @@ const CategoryUpdate = ({ history, match }) => {
   )
 
   return (
-    <div className='container-fluid'>
+    <div className='container-fluid mt-5'>
       <div className='row'>
         <div className='col-md-2'>
           <AdminNav />

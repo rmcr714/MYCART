@@ -65,5 +65,6 @@ export const getRelated = async (productId) => {
 
 //get the products based on search text
 export const fetchProductsByFilter = async (arg) => {
+  console.log(arg)
   return await axios.post(`/api/search/filters`, arg)
 }

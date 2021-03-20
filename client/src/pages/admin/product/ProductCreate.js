@@ -19,7 +19,16 @@ const productState = {
   quantity: '',
   images: [],
   colors: ['Black', 'brown', 'silver', 'white', 'blue'], //options to show in dropdown so that admin can pick one
-  brands: ['Samsung', 'Microsoft', 'Apple', 'Lenovo', 'ASUS', 'DELL','HP'], //options to show in dropdown so that admin can pick one
+  brands: [
+    'Samsung',
+    'Microsoft',
+    'Apple',
+    'Lenovo',
+    'ASUS',
+    'DELL',
+    'HP',
+    'REALME',
+  ], //options to show in dropdown so that admin can pick one
   color: '',
   brand: '',
 }
@@ -93,7 +102,7 @@ const ProductCreate = () => {
   }
 
   return (
-    <div className='container-fluid'>
+    <div className='container-fluid mt-5'>
       <div className='row'>
         <div className='col-md-2'>
           <AdminNav />
