@@ -2,11 +2,16 @@ import React, { useEffect, useState } from 'react'
 import { getProductsByCount, fetchProductsByFilter } from '../functions/product'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
+import Star from '../components/forms/Star'
 import { getCategories } from '../functions/category'
 import ProductCard from '../components/cards/ProductCard'
 import { LoadingOutlined } from '@ant-design/icons'
-import { DollarOutlined, DownSquareOutlined } from '@ant-design/icons'
-import { Menu, Slider,  Radio } from 'antd'
+import {
+  DollarOutlined,
+  DownSquareOutlined,
+  StarOutlined,
+} from '@ant-design/icons'
+import { Menu, Slider, Radio } from 'antd'
 
 const { SubMenu, ItemGroup } = Menu
 
@@ -18,6 +23,7 @@ const Shop = () => {
   const [ok, setOk] = useState(false)
   const [categories, setCategories] = useState([])
   const [categoryId, setCategoryId] = useState('6030cbff2d203528c8da261c')
+  const [star, setStar] = useState('')
 
   const { search } = useSelector((state) => ({ ...state }))
   const dispatch = useDispatch()
@@ -52,6 +58,7 @@ const Shop = () => {
   const fetchProducts = (arg) => {
     setLoading(true)
     fetchProductsByFilter(arg).then((res) => {
+      console.log(res.data)
       setProducts(res.data)
       setTempProducts(res.data)
     })
@@ -66,7 +73,7 @@ const Shop = () => {
       )
       setProducts(tempData)
     } else if (text == '') {
-      fetchProducts({ price, category: categoryId })
+      fetchProducts({ price, category: categoryId, stars: star })
     }
   }, [ok])
 
@@ -88,7 +95,6 @@ const Shop = () => {
           className='pb-2 pl-4 pr-4'
           value={c._id}
           name='category'
-        
         >
           {c.name}
         </Radio>
@@ -96,9 +102,9 @@ const Shop = () => {
       </div>
     ))
 
-    //handle category select
+  //handle category select
   const handleCheck = (e) => {
-    console.log( e.target.value)
+    console.log(e.target.value)
     // let inTheState = [...categoryIds]
     // let justChecked = e.target.value
     // let alreadyThereInState = inTheState.indexOf(justChecked)
@@ -108,20 +114,21 @@ const Shop = () => {
     //   //if found then pop it out
     //   inTheState.splice(alreadyThereInState, 1)
     // }
-    
-    if(text!=''){
+
+    if (text != '') {
       // dispatch({ type: 'SEARCH_QUERY', payload: { text: ''} })
       setCategoryId(e.target.value)
-     
-        const tempData = tempProducts.filter(
-          (data) => data.category._id == e.target.value
-        )
-        console.log(tempData)
-        setProducts(tempData)
-        }else{
-          setCategoryId(e.target.value)
-    fetchProducts({ price, category: e.target.value })
-    console.log(categoryId)}
+
+      const tempData = tempProducts.filter(
+        (data) => data.category._id == e.target.value
+      )
+      console.log(tempData)
+      setProducts(tempData)
+    } else {
+      setCategoryId(e.target.value)
+      fetchProducts({ price, category: e.target.value, stars: star })
+      console.log(categoryId)
+    }
   }
 
   //to load all products (12) when just user just clicks on shop icon without any search
@@ -131,8 +138,20 @@ const Shop = () => {
     setLoading(false)
   }
 
+  //5 Search by rating
+  const handleStarClick = (num) => {
+    console.log(num)
+    setStar(num)
+    fetchProducts({ price, category: categoryId, stars: num })
+  }
+  const showStars = () => (
+    <div className='pr-4 pl-4 pb-2'>
+      <Star starClick={handleStarClick} numberOfStars={5} />
+    </div>
+  )
+
   return (
-    <>
+    <div>
       <Link to='/' className='button'>
         {' '}
         <button type='button' className='btn btn-dark mt-5 ml-2'>
@@ -178,10 +197,23 @@ const Shop = () => {
                 }
               >
                 <div>
-                  <Radio.Group onChange={handleCheck} defaultValue={categoryId}  >
+                  <Radio.Group onChange={handleCheck} defaultValue={categoryId}>
                     {showCategories()}
                   </Radio.Group>
                 </div>
+              </SubMenu>
+              <br />
+              {/* filter by star */}
+              <SubMenu
+                key='3'
+                title={
+                  <span className='h6'>
+                    <StarOutlined />
+                    Rating
+                  </span>
+                }
+              >
+                <div className='mt-10'>{showStars()}</div>
               </SubMenu>
             </Menu>
           </div>
@@ -203,7 +235,7 @@ const Shop = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }
 

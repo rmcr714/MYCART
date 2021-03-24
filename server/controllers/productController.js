@@ -1,6 +1,7 @@
 import Product from '../models/productModel.js'
 import User from '../models/userModel.js'
 import slugify from 'slugify'
+import mongoose from 'mongoose'
 
 //@desc   Create a new Product
 //@route  POST /api/product
@@ -259,13 +260,70 @@ const handlePrice = async (req, res, price, category) => {
   }
 }
 
+const handleStars = async (req, res, stars, price, category) => {
+  console.log(
+    'stars===>',
+    stars,
+    'price=====>',
+    price,
+    'category====>',
+    category
+  )
+  try {
+    const products = await Product.aggregate([
+      {
+        $project: {
+          brand: '$brand',
+          category: '$category',
+          title: '$title',
+          color: '$color',
+          description: '$description',
+          createdAt: '$createdAt',
+          price: '$price',
+          images: '$images',
+          quantity: '$quantity',
+          slug: '$slug',
+          shipping: '$shipping',
+          ratings: '$ratings',
+          updatedAt: '$updatedAt',
+          floorAverage: {
+            $floor: { $avg: '$ratings.star' },
+          },
+        },
+      },
+      {
+        $match: {
+          $and: [
+            { floorAverage: stars },
+            {
+              price: {
+                $gte: price[0],
+                $lte: price[1],
+              },
+            },
+            { category: new mongoose.Types.ObjectId(category) },
+          ],
+        },
+      },
+    ])
+    // .exec((err,aggregates)=>{
+
+    // })
+    console.log(products)
+
+    res.json(products)
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 //@desc  Search the products
 //@route POST api/search/filters
 //@access public
 export const searchFilters = async (req, res) => {
-  const { query, price, category } = req.body
+  const { query, price, category, stars } = req.body
 
-  console.log('the data got is ',typeof  price,typeof category)
+  console.log('the data got is ', typeof price, typeof category, typeof stars)
   //filter on text
   if (query) {
     console.log(query)
@@ -273,8 +331,12 @@ export const searchFilters = async (req, res) => {
   }
 
   //filter on price eg price[20,100]
-  if (price !== undefined) {
+  if (price !== undefined && stars == '') {
     console.log('price is --->', price)
     await handlePrice(req, res, price, category)
+  }
+
+  if (stars !== undefined) {
+    await handleStars(req, res, stars, price, category)
   }
 }
