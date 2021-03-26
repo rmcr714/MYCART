@@ -177,6 +177,14 @@ export const productStar = async (req, res) => {
         { new: true }
       ).exec()
 
+      // let average = 0
+      // ratingAdded.ratings.forEach((value) => (average = average + value.star))
+      // let floorAverage = Math.floor(average / ratingAdded.ratings.length)
+      // console.log(floorAverage)
+      // await Product.findByIdAndUpdate(product._id, {
+      //   averageRating: floorAverage,
+      // })
+
       res.json(ratingAdded)
     } else {
       //if user wants to update his rating and comment
@@ -187,10 +195,20 @@ export const productStar = async (req, res) => {
         { $set: { 'ratings.$.star': star, 'ratings.$.comment': comment } },
         { new: true }
       ).exec()
+      // let average = 0
+      // product.ratings.forEach((value) => (average = average + value.star))
+      // console.log(average)
+      // console.log(product.ratings.length)
+      // let floorAverage = Math.floor(average / product.ratings.length)
+      // console.log(floorAverage)
+      // await Product.findByIdAndUpdate(product._id, {
+      //   averageRating: floorAverage,
+      // })
 
       res.json(ratingUpdated)
     }
   } catch (err) {
+    console.log(err)
     res.status(400).json({
       err: err.message,
     })
@@ -237,21 +255,38 @@ const handleQuery = async (req, res, query) => {
   res.json(products)
 }
 
-const handlePrice = async (req, res, price, category) => {
+const handlePrice = async (req, res, price, category, brand) => {
   try {
-    const products = await Product.find({
-      price: {
-        $gte: price[0],
-        $lte: price[1],
-      },
-      category: category,
-    })
-      .populate('category', '_id name')
-      .populate('subs', '_id name')
-      .populate('postedBy', '_id name')
-      .exec()
-    // console.log(products)
-    res.json(products)
+    if (brand == undefined || brand == '') {
+      const products = await Product.find({
+        price: {
+          $gte: price[0],
+          $lte: price[1],
+        },
+        category: category,
+      })
+        .populate('category', '_id name')
+        .populate('subs', '_id name')
+        .populate('postedBy', '_id name')
+        .exec()
+      // console.log(products)
+      res.json(products)
+    } else {
+      const products = await Product.find({
+        price: {
+          $gte: price[0],
+          $lte: price[1],
+        },
+        category: category,
+        brand: brand,
+      })
+        .populate('category', '_id name')
+        .populate('subs', '_id name')
+        .populate('postedBy', '_id name')
+        .exec()
+      // console.log(products)
+      res.json(products)
+    }
   } catch (err) {
     console.log(err)
     res.status(400).json({
@@ -260,58 +295,106 @@ const handlePrice = async (req, res, price, category) => {
   }
 }
 
-const handleStars = async (req, res, stars, price, category) => {
+const handleStars = async (req, res, stars, price, category, brand) => {
   console.log(
     'stars===>',
     stars,
     'price=====>',
     price,
     'category====>',
-    category
+    category,
+    'brand=====>',
+    brand
   )
   try {
-    const products = await Product.aggregate([
-      {
-        $project: {
-          brand: '$brand',
-          category: '$category',
-          title: '$title',
-          color: '$color',
-          description: '$description',
-          createdAt: '$createdAt',
-          price: '$price',
-          images: '$images',
-          quantity: '$quantity',
-          slug: '$slug',
-          shipping: '$shipping',
-          ratings: '$ratings',
-          updatedAt: '$updatedAt',
-          floorAverage: {
-            $floor: { $avg: '$ratings.star' },
+    if (brand == '' || brand == undefined) {
+      const products = await Product.aggregate([
+        {
+          $project: {
+            brand: '$brand',
+            category: '$category',
+            title: '$title',
+            color: '$color',
+            description: '$description',
+            createdAt: '$createdAt',
+            price: '$price',
+            images: '$images',
+            quantity: '$quantity',
+            slug: '$slug',
+            shipping: '$shipping',
+            ratings: '$ratings',
+            updatedAt: '$updatedAt',
+            floorAverage: {
+              $floor: { $avg: '$ratings.star' },
+            },
           },
         },
-      },
-      {
-        $match: {
-          $and: [
-            { floorAverage: stars },
-            {
-              price: {
-                $gte: price[0],
-                $lte: price[1],
+        {
+          $match: {
+            $and: [
+              { floorAverage: stars },
+              {
+                price: {
+                  $gte: price[0],
+                  $lte: price[1],
+                },
               },
-            },
-            { category: new mongoose.Types.ObjectId(category) },
-          ],
+              { category: new mongoose.Types.ObjectId(category) },
+            ],
+          },
         },
-      },
-    ])
-    // .exec((err,aggregates)=>{
+      ])
+      // .exec((err,aggregates)=>{
 
-    // })
-    console.log(products)
+      // })
+      console.log(products)
 
-    res.json(products)
+      res.json(products)
+    } else {
+      const products = await Product.aggregate([
+        {
+          $project: {
+            brand: '$brand',
+            category: '$category',
+            title: '$title',
+            color: '$color',
+            description: '$description',
+            createdAt: '$createdAt',
+            price: '$price',
+            images: '$images',
+            quantity: '$quantity',
+            slug: '$slug',
+            shipping: '$shipping',
+            ratings: '$ratings',
+            updatedAt: '$updatedAt',
+            floorAverage: {
+              $floor: { $avg: '$ratings.star' },
+            },
+          },
+        },
+        {
+          $match: {
+            $and: [
+              { floorAverage: stars },
+              {
+                price: {
+                  $gte: price[0],
+                  $lte: price[1],
+                },
+              },
+              { category: new mongoose.Types.ObjectId(category) },
+              { brand: brand },
+            ],
+          },
+        },
+      ])
+      // .exec((err,aggregates)=>{
+
+      // })
+      console.log(products, 'we  have a brand')
+
+      res.json(products)
+    }
   } catch (err) {
     console.log(err)
   }
@@ -321,9 +404,15 @@ const handleStars = async (req, res, stars, price, category) => {
 //@route POST api/search/filters
 //@access public
 export const searchFilters = async (req, res) => {
-  const { query, price, category, stars } = req.body
+  const { query, price, category, stars, brand } = req.body
 
-  console.log('the data got is ', typeof price, typeof category, typeof stars)
+  console.log(
+    'the data got is ',
+    typeof price,
+    typeof category,
+    typeof stars,
+    brand
+  )
   //filter on text
   if (query) {
     console.log(query)
@@ -333,10 +422,10 @@ export const searchFilters = async (req, res) => {
   //filter on price eg price[20,100]
   if (price !== undefined && stars == '') {
     console.log('price is --->', price)
-    await handlePrice(req, res, price, category)
+    await handlePrice(req, res, price, category, brand)
   }
 
   if (stars !== undefined) {
-    await handleStars(req, res, stars, price, category)
+    await handleStars(req, res, stars, price, category, brand)
   }
 }

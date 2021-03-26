@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose from 'mongoose'
 const { ObjectId } = mongoose.Schema
 
 const productSchema = new mongoose.Schema(
@@ -31,12 +31,12 @@ const productSchema = new mongoose.Schema(
     },
     category: {
       type: ObjectId,
-      ref: "Category",
+      ref: 'Category',
     },
     subs: [
       {
         type: ObjectId,
-        ref: "Sub",
+        ref: 'Sub',
       },
     ],
     quantity: Number,
@@ -47,23 +47,27 @@ const productSchema = new mongoose.Schema(
     images: { type: Array },
     shipping: {
       type: String,
-      enum: ["Yes", "No"],
+      enum: ['Yes', 'No'],
     },
     color: {
       type: String,
-      enum: ["Black", "brown", "silver", "white", "blue"],
+      enum: ['Black', 'brown', 'silver', 'white', 'blue'],
     },
+    // averageRating: {
+    //   type: Number,
+    //   default: 0,
+    // },
     brand: {
       type: String,
       enum: [
-        "Samsung",
-        "Microsoft",
-        "Apple",
-        "Lenovo",
-        "ASUS",
-        "DELL",
-        "HP",
-        "REALME",
+        'Samsung',
+        'Microsoft',
+        'Apple',
+        'Lenovo',
+        'ASUS',
+        'DELL',
+        'HP',
+        'REALME',
       ],
     },
     ratings: [
@@ -72,7 +76,7 @@ const productSchema = new mongoose.Schema(
           {
             star: Number,
             name: String,
-            postedBy: { type: ObjectId, ref: "User" },
+            postedBy: { type: ObjectId, ref: 'User' },
             comment: String,
           },
           { timestamps: true }
@@ -85,5 +89,5 @@ const productSchema = new mongoose.Schema(
   }
 )
 
-const Product = mongoose.model("Product", productSchema)
+const Product = mongoose.model('Product', productSchema)
 export default Product

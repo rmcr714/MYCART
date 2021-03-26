@@ -24,6 +24,17 @@ const Shop = () => {
   const [categories, setCategories] = useState([])
   const [categoryId, setCategoryId] = useState('6030cbff2d203528c8da261c')
   const [star, setStar] = useState('')
+  const [brands, setBrands] = useState([
+    'Samsung',
+    'Microsoft',
+    'Apple',
+    'Lenovo',
+    'ASUS',
+    'DELL',
+    'HP',
+    'REALME',
+  ])
+  const [brand, setBrand] = useState('')
 
   const { search } = useSelector((state) => ({ ...state }))
   const dispatch = useDispatch()
@@ -68,12 +79,29 @@ const Shop = () => {
   //3.filter products based on price
   useEffect(() => {
     if (text !== '' && tempProducts.length > 0) {
-      const tempData = tempProducts.filter(
-        (data) => data.price >= price[0] && data.price <= price[1]
-      )
-      setProducts(tempData)
+      console.log('inside price useEffect', categoryId)
+      console.log(brand)
+
+      if (brand == '') {
+        const tempData = tempProducts.filter(
+          (data) =>
+            data.price >= price[0] &&
+            data.price <= price[1] &&
+            data.category._id == categoryId
+        )
+        setProducts(tempData)
+      } else if (brand !== '') {
+        const tempData = tempProducts.filter(
+          (data) =>
+            data.price >= price[0] &&
+            data.price <= price[1] &&
+            data.category._id == categoryId &&
+            data.brand == brand
+        )
+        setProducts(tempData)
+      }
     } else if (text == '') {
-      fetchProducts({ price, category: categoryId, stars: star })
+      fetchProducts({ price, category: categoryId, stars: star, brand: brand })
     }
   }, [ok])
 
@@ -115,18 +143,37 @@ const Shop = () => {
     //   inTheState.splice(alreadyThereInState, 1)
     // }
 
-    if (text != '') {
+    if (text !== '' && star == '') {
       // dispatch({ type: 'SEARCH_QUERY', payload: { text: ''} })
       setCategoryId(e.target.value)
-
-      const tempData = tempProducts.filter(
-        (data) => data.category._id == e.target.value
-      )
-      console.log(tempData)
-      setProducts(tempData)
+      if (brand == '') {
+        const tempData = tempProducts.filter(
+          (data) =>
+            data.category._id == e.target.value &&
+            data.price >= price[0] &&
+            data.price <= price[1]
+        )
+        console.log(tempData)
+        setProducts(tempData)
+      } else if (brand !== '') {
+        const tempData = tempProducts.filter(
+          (data) =>
+            data.category._id == e.target.value &&
+            data.price >= price[0] &&
+            data.price <= price[1] &&
+            data.brand == brand
+        )
+        console.log(tempData)
+        setProducts(tempData)
+      }
     } else {
       setCategoryId(e.target.value)
-      fetchProducts({ price, category: e.target.value, stars: star })
+      fetchProducts({
+        price,
+        category: e.target.value,
+        stars: star,
+        brand: brand,
+      })
       console.log(categoryId)
     }
   }
@@ -142,13 +189,55 @@ const Shop = () => {
   const handleStarClick = (num) => {
     console.log(num)
     setStar(num)
-    fetchProducts({ price, category: categoryId, stars: num })
+    fetchProducts({ price, category: categoryId, stars: num, brand: brand })
   }
   const showStars = () => (
     <div className='pr-4 pl-4 pb-2'>
       <Star starClick={handleStarClick} numberOfStars={5} />
     </div>
   )
+
+  //search by brand
+  const showBrands = () =>
+    brands.map((c) => (
+      <div key={c}>
+        <Radio
+          onChange={handleBrand}
+          className='pb-2 pl-4 pr-4'
+          value={c}
+          name='category'
+        >
+          {c}
+        </Radio>
+        <br />
+      </div>
+    ))
+
+  const handleBrand = (e) => {
+    console.log(e.target.value)
+
+    if (text != '') {
+      console.log('inside handlebrand by text')
+      setBrand(e.target.value)
+      const tempData = tempProducts.filter(
+        (data) =>
+          data.category._id == categoryId &&
+          data.price >= price[0] &&
+          data.price <= price[1] &&
+          data.brand == e.target.value
+      )
+
+      setProducts(tempData)
+    } else {
+      setBrand(e.target.value)
+      fetchProducts({
+        price,
+        category: categoryId,
+        stars: star,
+        brand: e.target.value,
+      })
+    }
+  }
 
   return (
     <div>
@@ -171,7 +260,7 @@ const Shop = () => {
                 title={
                   <span className='h6'>
                     <DollarOutlined />
-                    Price
+                    <b> Price</b>
                   </span>
                 }
               >
@@ -192,7 +281,7 @@ const Shop = () => {
                 title={
                   <span className='h6'>
                     <DownSquareOutlined />
-                    categories
+                    <b> categories</b>
                   </span>
                 }
               >
@@ -203,17 +292,43 @@ const Shop = () => {
                 </div>
               </SubMenu>
               <br />
+
               {/* filter by star */}
               <SubMenu
                 key='3'
                 title={
                   <span className='h6'>
                     <StarOutlined />
-                    Rating
+                    <b>Rating</b>
                   </span>
                 }
               >
                 <div className='mt-10'>{showStars()}</div>
+
+                <button
+                  class=' btn-primary h6 ml-4 mt-2'
+                  onClick={() => {
+                    setStar('')
+                  }}
+                >
+                  reset
+                </button>
+              </SubMenu>
+              <br />
+
+              {/* brands */}
+              <SubMenu
+                key='4'
+                title={
+                  <span className='h6'>
+                    <DownSquareOutlined />
+                    <b>Brands</b>
+                  </span>
+                }
+              >
+                <div>
+                  <Radio.Group>{showBrands()}</Radio.Group>
+                </div>
               </SubMenu>
             </Menu>
           </div>
