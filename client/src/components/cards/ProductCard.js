@@ -1,13 +1,40 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { EyeOutlined, ShoppingCartOutlined } from '@ant-design/icons'
 import laptop from '../../images/laptop.png'
 import { Link } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+import _ from 'lodash'
 import RatingsAverage from '../../functions/RatingsAverage'
-import { Card } from 'antd'
+import { Card, Tooltip } from 'antd'
+import { userReducer } from '../../reducers/userReducer'
 const { Meta } = Card
 
 const ProductCard = ({ product }) => {
   const { title, description, images, slug, ratings } = product
+  const [toolTip, setToolTip] = useState('click to add to cart')
+
+  //redux
+  const { user, cart } = useSelector((state) => ({ ...state }))
+  const dispatch = useDispatch()
+
+  const handleAddToCart = () => {
+    let cart = []
+    if (typeof window !== 'undefined') {
+      if (localStorage.getItem('cart')) {
+        cart = JSON.parse(localStorage.getItem('cart'))
+      }
+
+      cart.push({ ...product, count: 1 })
+
+      let unique = _.uniqWith(cart, _.isEqual)
+
+      localStorage.setItem('cart', JSON.stringify(unique))
+      setToolTip('added to cart')
+
+      //dispatch to redux i.e add the local storage(added to cart products) data to redux state
+      dispatch({ type: 'ADD_TO_CART', payload: unique })
+    }
+  }
   return (
     <>
       <Card
@@ -26,17 +53,25 @@ const ProductCard = ({ product }) => {
             <br />
             View Product
           </Link>,
-          <>
-            {' '}
-            <ShoppingCartOutlined className='text-success' /> <br />
-            Add to cart
-          </>,
+          <Tooltip title={toolTip}>
+            <a
+              onClick={() => {
+                handleAddToCart()
+              }}
+            >
+              {' '}
+              <ShoppingCartOutlined className='text-success' /> <br />
+              Add to cart
+            </a>
+          </Tooltip>,
         ]}
       >
-        <Meta
-          title={title}
-          description={`${description && description.substring(0, 70)} . . .`}
-        />
+        <toolTip title={title}>
+          <Meta
+            title={title}
+            description={`${description && description.substring(0, 70)} . . .`}
+          />
+        </toolTip>
 
         {product && product.ratings && ratings.length > 0 ? (
           <div className='pt-3 pb-1'>{RatingsAverage(product)}</div>

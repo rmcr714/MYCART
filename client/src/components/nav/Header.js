@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Menu } from 'antd'
+import { Menu, Badge } from 'antd'
 import Search from '../forms/Search'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -20,7 +20,7 @@ const Header = () => {
   const [current, setCurrent] = useState('home')
 
   const dispatch = useDispatch()
-  const { user } = useSelector((state) => ({ ...state }))
+  const { user, cart } = useSelector((state) => ({ ...state }))
 
   const history = useHistory()
 
@@ -55,6 +55,14 @@ const Header = () => {
       <Item key='shop'>
         <Link to='/shop' style={{ color: 'white' }}>
           <i className='fas fa-shopping-bag'></i> &nbsp;Shop
+        </Link>
+      </Item>
+      <Item key='cart'>
+        <Link to='/cart' style={{ color: 'white' }}>
+          <i className='fas fa-shopping-cart'></i> &nbsp;
+          <Badge count={cart.length} offset={[9, 0]}>
+            <i style={{ color: 'white' }}>Cart</i>
+          </Badge>
         </Link>
       </Item>
       {!user && (
