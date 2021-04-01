@@ -1,7 +1,7 @@
-import React from "react"
-import { useHistory } from "react-router-dom"
-import { useSelector, useDispatch } from "react-redux"
-import { SearchOutlined } from "@ant-design/icons"
+import React from 'react'
+import { useHistory } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+import { SearchOutlined } from '@ant-design/icons'
 
 const Search = () => {
   const dispatch = useDispatch()
@@ -11,7 +11,7 @@ const Search = () => {
 
   const handleChange = (e) => {
     //
-    dispatch({ type: "SEARCH_QUERY", payload: { text: e.target.value } })
+    dispatch({ type: 'SEARCH_QUERY', payload: { text: e.target.value } })
   }
 
   const handleSubmit = (e) => {
@@ -27,11 +27,11 @@ const Search = () => {
         value={text}
         className='form-control mr-sm-3 rounded border border-primary'
         placeholder=' Search'
-        style={{ backgroundColor: "white" }}
+        style={{ backgroundColor: 'white' }}
       />
       <SearchOutlined
         onClick={handleSubmit}
-        style={{ cursor: "pointer", color: "yellow" }}
+        style={{ cursor: 'pointer', color: 'yellow' }}
       />
     </form>
   )
