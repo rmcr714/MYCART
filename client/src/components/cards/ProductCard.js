@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
-import { EyeOutlined, ShoppingCartOutlined } from '@ant-design/icons'
+import {
+  EyeOutlined,
+  ShoppingCartOutlined,
+  ClockCircleOutlined,
+} from '@ant-design/icons'
 import laptop from '../../images/laptop.png'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
@@ -26,7 +30,7 @@ const ProductCard = ({ product }) => {
 
       cart.push({ ...product, count: 1 })
 
-      let unique = _.uniqWith(cart, _.isEqual)
+      let unique = _.uniqBy(cart, '_id')
 
       localStorage.setItem('cart', JSON.stringify(unique))
       setToolTip('added to cart')
@@ -53,16 +57,24 @@ const ProductCard = ({ product }) => {
             <br />
             View Product
           </Link>,
-          <Tooltip title={toolTip}>
-            <a
-              onClick={() => {
-                handleAddToCart()
-              }}
-            >
-              {' '}
-              <ShoppingCartOutlined className='text-success' /> <br />
-              Add to cart
-            </a>
+          <Tooltip title={product.quantity > 0 ? toolTip : 'Out of stock'}>
+            {product.quantity > 0 ? (
+              <a
+                onClick={() => {
+                  handleAddToCart()
+                }}
+              >
+                {' '}
+                <ShoppingCartOutlined className='text-success' /> <br />
+                Add to cart
+              </a>
+            ) : (
+              <a>
+                <ClockCircleOutlined className='text-danger' />
+                <br />
+                currently out of stock
+              </a>
+            )}
           </Tooltip>,
         ]}
       >

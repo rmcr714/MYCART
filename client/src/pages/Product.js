@@ -86,7 +86,7 @@ const Product = ({ match }) => {
       <div className='row p-1'>
         <div className='col ml-2 pt-5 pb-4 pl-4'>
           <hr />
-          <h3 className='text-center alert-info'>Related Products</h3>
+          <h3>Similar Products</h3>
         </div>
       </div>
       <div className='row pl-4'>

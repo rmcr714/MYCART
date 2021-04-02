@@ -4,7 +4,11 @@ import { Link } from 'react-router-dom'
 import _ from 'lodash'
 import 'react-responsive-carousel/lib/styles/carousel.min.css' // requires a loader
 import { Carousel } from 'react-responsive-carousel'
-import { HeartOutlined, ShoppingCartOutlined } from '@ant-design/icons'
+import {
+  HeartOutlined,
+  ShoppingCartOutlined,
+  ClockCircleOutlined,
+} from '@ant-design/icons'
 import { useSelector, useDispatch } from 'react-redux'
 import ProductListItems from './ProductListItems'
 // import ProductRatingForm from '../forms/ProductRatingForm'
@@ -91,15 +95,23 @@ const SingleProduct = ({
         <Card
           className='productcard'
           actions={[
-            <Tooltip title={toolTip}>
-              <a
-                onClick={() => {
-                  handleAddToCart()
-                }}
-              >
-                <ShoppingCartOutlined className='text-success' /> <br />
-                Add to Cart
-              </a>
+            <Tooltip title={product.quantity > 0 ? toolTip : 'out of stock'}>
+              {product.quantity > 0 ? (
+                <a
+                  onClick={() => {
+                    handleAddToCart()
+                  }}
+                >
+                  <ShoppingCartOutlined className='text-success' /> <br />
+                  Add to Cart
+                </a>
+              ) : (
+                <a>
+                  <ClockCircleOutlined className='text-danger' />
+                  <br />
+                  currently out of stock
+                </a>
+              )}
             </Tooltip>,
             <Link to='/'>
               <HeartOutlined className='text-danger' />

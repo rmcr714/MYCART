@@ -1,8 +1,11 @@
+import { toast } from 'react-toastify'
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 const Cart = () => {
+  const colors = ['Black', 'brown', 'silver', 'white', 'blue']
+
   //redux
   const { user, cart } = useSelector((state) => ({ ...state }))
   const dispatch = useDispatch()
@@ -11,6 +14,85 @@ const Cart = () => {
     return cart.reduce((current, next) => {
       return current + next.count * next.price
     }, 0)
+  }
+
+  //save to db on checkout
+  const saveOrderToDb = () => {
+    console.log('saving to db')
+  }
+
+  //change color or select a new color
+  const handleColorChange = (e, productId) => {
+    let cart = []
+    if (typeof window !== 'undefined') {
+      if (localStorage.getItem('cart')) {
+        cart = JSON.parse(localStorage.getItem('cart'))
+      }
+
+      cart.map((product, i) => {
+        if (product._id === productId) {
+          cart[i].color = e.target.value
+        }
+      })
+
+      localStorage.setItem('cart', JSON.stringify(cart))
+
+      dispatch({ type: 'ADD_TO_CART', payload: cart })
+    }
+  }
+
+  //Change Quantity
+  const handleQuantityChange = (e, productId, quantity) => {
+    console.log(quantity)
+    if (e.target.value > 4) {
+      e.target.value = 4
+    }
+    if (e.target.value === '' || e.target.value === '0') {
+      e.target.value = 1
+    }
+    if (quantity < e.target.value) {
+      toast.error(`Max Quantity Available ${quantity}`)
+      return
+    }
+
+    let cart = []
+    if (typeof window !== 'undefined') {
+      if (localStorage.getItem('cart')) {
+        cart = JSON.parse(localStorage.getItem('cart'))
+      }
+
+      cart.map((product, i) => {
+        if (product._id === productId) {
+          cart[i].count = e.target.value
+        }
+      })
+
+      localStorage.setItem('cart', JSON.stringify(cart))
+
+      dispatch({ type: 'ADD_TO_CART', payload: cart })
+    }
+  }
+
+  //Remove Item
+  const handleRemove = (productId) => {
+    console.log(productId)
+
+    let cart = []
+    if (typeof window !== 'undefined') {
+      if (localStorage.getItem('cart')) {
+        cart = JSON.parse(localStorage.getItem('cart'))
+      }
+
+      cart.map((product, i) => {
+        if (product._id === productId) {
+          cart.splice(i, 1)
+        }
+      })
+
+      localStorage.setItem('cart', JSON.stringify(cart))
+
+      dispatch({ type: 'ADD_TO_CART', payload: cart })
+    }
   }
 
   return (
@@ -23,7 +105,7 @@ const Cart = () => {
                 Cart (<span>{cart.length}</span> items)
               </h5>
 
-              {cart.length == 0 ? (
+              {cart.length === 0 ? (
                 <>
                   <h4 className='ml-2 text-center mb-4'>
                     No products in the cart,&nbsp;
@@ -36,8 +118,8 @@ const Cart = () => {
                   <br />
                 </>
               ) : (
-                cart.map((data) => (
-                  <div className='row mb-4 ml-2'>
+                cart.map((data, index) => (
+                  <div className='row mb-4 ml-2' key={index}>
                     <div className='col-md-5 col-lg-3 col-xl-3'>
                       <div className='view zoom overlay z-depth-1 rounded mb-3 mb-md-0'>
                         <img
@@ -51,12 +133,40 @@ const Cart = () => {
                       <div>
                         <div className='d-flex justify-content-between'>
                           <div>
-                            <h5>{data.title}</h5>
+                            <Link to={`/product/${data.slug}`}>
+                              {' '}
+                              <h5>{data.title}</h5>
+                            </Link>
                             <p className='mb-3 text-muted text-uppercase small'>
                               {data.brand}
                             </p>
                             <p className='mb-2 text-muted text-uppercase small'>
-                              Color: {data.color}
+                              Color:{' '}
+                              <span>
+                                <select
+                                  name='color'
+                                  id=''
+                                  onChange={(e) =>
+                                    handleColorChange(e, data._id)
+                                  }
+                                  className='form-control col-md-2 col-xs-2'
+                                >
+                                  {data.color ? (
+                                    <option value={data.color}>
+                                      {data.color}
+                                    </option>
+                                  ) : (
+                                    <option>Select a color</option>
+                                  )}
+                                  {colors
+                                    .filter((c) => c !== data.color)
+                                    .map((c) => (
+                                      <option value={c} key={c}>
+                                        {c}
+                                      </option>
+                                    ))}
+                                </select>
+                              </span>
                             </p>
                             <br />
                             <br />
@@ -69,23 +179,30 @@ const Cart = () => {
                                 max='4'
                                 name='quantity'
                                 type='number'
-                                defaultValue='1'
+                                defaultValue={data.count}
+                                onChange={(e) =>
+                                  handleQuantityChange(
+                                    e,
+                                    data._id,
+                                    data.quantity
+                                  )
+                                }
                               />
                             </div>
                             <small
                               id='passwordHelpBlock'
                               className='form-text text-muted text-center'
                             >
-                              (Note, 1 piece)
+                              (Note, {data.count} piece)
                             </small>
                           </div>
                         </div>
                         <div className='d-flex justify-content-between align-items-center'>
                           <div>
                             <a
-                              href='#!'
                               type='button'
-                              className='card-link-secondary small text-uppercase mr-3'
+                              className='card-link-secondary small text-uppercase mr-3 text-danger'
+                              onClick={(e) => handleRemove(data._id)}
                             >
                               <i className='fas fa-trash-alt mr-1'></i> Remove
                               item{' '}
@@ -162,7 +279,8 @@ const Cart = () => {
         <div className='col-lg-4 mt-2'>
           <div className='mb-3'>
             <div className='pt-4'>
-              <h5 className='mb-3'>The total amount of</h5>
+              <h5 className='mb-3 alert alert-dark'>Price Details</h5>
+              <hr />
 
               <ul className='list-group list-group-flush'>
                 {cart.length > 0 ? (
@@ -209,7 +327,7 @@ const Cart = () => {
                 <button
                   type='button'
                   className='btn btn-outline-primary btn-block'
-                  disabled={cart.length == 0}
+                  disabled={!cart.length}
                 >
                   go to checkout
                 </button>
@@ -217,8 +335,12 @@ const Cart = () => {
                 <button
                   type='button'
                   className='btn btn-outline-primary btn-block'
+                  onClick={saveOrderToDb}
                 >
-                  Login to continue
+                  <Link to={{ pathname: '/login', state: { from: 'cart' } }}>
+                    {' '}
+                    Login to continue
+                  </Link>
                 </button>
               )}
             </div>

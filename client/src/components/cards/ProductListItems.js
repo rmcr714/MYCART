@@ -17,8 +17,8 @@ const ProductListItems = ({ product }) => {
         Price{' '}
         <span className='label label-default label-pill pull-xs-right '>
           ${price}{' '}
-          <span className='text-danger h6'> &nbsp;&nbsp;you save 20%</span>
-          <del>${price + (20 / 100) * price}</del>
+          {/* <span className='text-danger h6'> &nbsp;&nbsp;you save 20%</span>
+          <del>${price + (20 / 100) * price}</del> */}
         </span>
       </li>
 
@@ -66,7 +66,7 @@ const ProductListItems = ({ product }) => {
           {brand}
         </span>
       </li>
-      <li className='list-group-item h5 font-italic'>
+      {/* <li className='list-group-item h5 font-italic'>
         Available{' '}
         <span className='label label-default label-pill pull-xs-right '>
           {quantity}
@@ -77,7 +77,7 @@ const ProductListItems = ({ product }) => {
         <span className='label label-default label-pill pull-xs-right '>
           {sold}
         </span>
-      </li>
+      </li> */}
     </ul>
   )
 }
