@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { useSelector, useDispatch } from 'react-redux'
 import axios from 'axios'
-import { getUserCart } from '../functions/user'
+import { getUserCart, saveAddress } from '../functions/user'
 
 const Checkout = ({ history }) => {
   //redux state
@@ -10,12 +10,28 @@ const Checkout = ({ history }) => {
   const dispatch = useDispatch()
 
   //address states
+  //first Name
+  const [firstName, setFirstName] = useState('')
+  //last Name
+  const [lastName, setLastName] = useState('')
+  //Address
+  const [address, setAddress] = useState('')
   //zip
   const [zip, setZip] = useState('')
   //city
   const [city, setCity] = useState('')
   //state
   const [state, setState] = useState('')
+  //phone
+  const [phone, setPhone] = useState('')
+  //email
+  const [email, setEmail] = useState(user.email)
+  //type of address
+  const [addressType, setAddressType] = useState('home')
+  //address saved
+  const [addressSaved, setSavedAddress] = useState(false)
+  //user addresses
+  const [savedUserAddresses, setSavedUserAddresses] = useState([])
 
   //received cart state
   const [products, setProducts] = useState([])
@@ -32,12 +48,15 @@ const Checkout = ({ history }) => {
           toast.error('oops something wrong happened pls go bakc and try again')
         } else {
           console.log(res.data)
+          if (res.data.addresses !== null) {
+            setSavedUserAddresses(res.data.orderedBy.addresses)
+          }
           setProducts(res.data.products)
           setTotal(res.data.cartTotal)
         }
       })
       .catch((error) => toast.error('something happened pls go back'))
-  }, [])
+  }, [addressSaved])
 
   const checkPin = async () => {
     console.log(zip)
@@ -60,6 +79,32 @@ const Checkout = ({ history }) => {
 
   const saveAddressToDb = (e) => {
     e.preventDefault()
+
+    const addressToSave = {
+      firstName,
+      lastName,
+      address,
+      zip,
+      state,
+      city,
+      phone,
+      email,
+      addressType,
+    }
+    saveAddress(user.token, addressToSave).then((res) => {
+      if (res == null) {
+        toast.error('oops something went wrong, pls try again')
+      } else if (res.data.message == 'address successfully saved') {
+        toast.success(res.data.message)
+        setSavedAddress(!addressSaved)
+      } else {
+        toast.error(res.data.message)
+      }
+    })
+  }
+
+  const checking = () => {
+    console.log('ok')
   }
   return (
     <>
@@ -82,6 +127,8 @@ const Checkout = ({ history }) => {
                           className='form-control mb-0 mb-lg-2'
                           title='Only alphabets are allowed'
                           pattern='^[A-Za-z]+$'
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
                           required
                         />
                         <label for='firstName'>
@@ -98,6 +145,8 @@ const Checkout = ({ history }) => {
                           className='form-control'
                           title='Only alphabets are allowed'
                           pattern='^[A-Za-z]+$'
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
                           required
                         />
                         <label htmlFor='lastName'>
@@ -127,6 +176,8 @@ const Checkout = ({ history }) => {
                       name='address1'
                       // placeholder='House number and street name'
                       className='form-control'
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
                       required
                     />
                     <label htmlFor='address1'>
@@ -205,6 +256,8 @@ const Checkout = ({ history }) => {
                       className='form-control'
                       pattern='^[6-9]\d{9}$'
                       title='Please provide  a valid number'
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
                       required
                     />
                     <label htmlFor='phone'>
@@ -217,6 +270,8 @@ const Checkout = ({ history }) => {
                       type='email'
                       name='email'
                       className='form-control'
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       required
                     />
                     <label htmlFor='email'>
@@ -226,11 +281,15 @@ const Checkout = ({ history }) => {
                   <br />
                   <div class='d-flex flex-wrap'>
                     <div class='select-outline position-relative w-100'>
-                      <select class='mdb-select md-form md-outline form-control'>
+                      <select
+                        class='mdb-select md-form md-outline form-control'
+                        value={addressType}
+                        onChange={(e) => setAddressType(e.target.value)}
+                      >
                         <option defaultValue='' disabled selected>
                           Select an Address Type
                         </option>
-                        <option defaultValue='home'>Work</option>
+                        <option defaultValue='home'>home</option>
                         <option defaultValue='office'>office</option>
                       </select>
                       <label>Address type</label>
@@ -241,7 +300,9 @@ const Checkout = ({ history }) => {
                     <button
                       type='submit'
                       className='text-center btn btn-primary btn-raised '
-                      disabled={!(zip && city && state)}
+                      disabled={
+                        !(zip && city && state && address && phone && email)
+                      }
                     >
                       save Address
                     </button>
@@ -297,7 +358,8 @@ const Checkout = ({ history }) => {
                 <button
                   type='button'
                   className='text-center btn btn-primary btn-raised btn-block'
-                  disabled={products.length == 0}
+                  disabled={!savedUserAddresses.length > 0}
+                  onClick={() => checking()}
                 >
                   Place Order
                 </button>
@@ -335,6 +397,20 @@ const Checkout = ({ history }) => {
             </div>
           </div>
         </div>
+        {/* <hr />
+        <h5>Your addresses</h5> */}
+
+        {/* {savedUserAddresses.length > 0 ? (
+          <div className='row mt-4 ml-1 mb-3'>
+            <div className='col-md-4'>
+              <div className='card'>
+                <div className='card-body'>hi</div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <></>
+        )} */}
       </section>
     </>
   )

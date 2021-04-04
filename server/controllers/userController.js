@@ -3,7 +3,7 @@ import User from '../models/userModel.js'
 import Product from '../models/productModel.js'
 
 //@desc  save cart data in cart collection
-//@route POST /api/cart
+//@route POST /api/user/cart
 //@access private
 export const userCart = async (req, res) => {
   const { cart } = req.body
@@ -46,7 +46,7 @@ export const userCart = async (req, res) => {
 }
 
 //@desc  get user cart
-//@route GET /api/cart
+//@route GET /api/user/cart
 //@access private
 export const getUserCart = async (req, res) => {
   try {
@@ -54,11 +54,44 @@ export const getUserCart = async (req, res) => {
 
     let cart = await Cart.findOne({ orderedBy: user._id })
       .populate('products.product', '_id title price totalAfterDiscount')
+      .populate('orderedBy')
       .exec()
 
-    const { products, cartTotal, totalAfterDiscount } = cart
+    const { products, cartTotal, totalAfterDiscount, orderedBy } = cart
 
-    res.json({ products, cartTotal, totalAfterDiscount })
+    res.json({ products, cartTotal, totalAfterDiscount, orderedBy })
+  } catch (error) {
+    console.log(error)
+    res.json(null)
+  }
+}
+
+//@desc  get user cart
+//@route GET /api/user/address
+//@access private
+export const saveAddress = async (req, res) => {
+  try {
+    const { addresses } = req.body
+
+    //find the customer
+    const user = await User.findOne({ email: req.user.email }).exec()
+
+    const addressAlreadyPresent = user.addresses.find(
+      (element) => element.address.toString() == addresses.address.toString()
+    )
+
+    if (addressAlreadyPresent) {
+      res.json({
+        message: 'Address already present please enter a different address',
+      })
+    } else {
+      const userAddress = await User.findOneAndUpdate(
+        { email: req.user.email },
+        { $push: { addresses: addresses } }
+      )
+
+      res.json({ message: 'address successfully saved' })
+    }
   } catch (error) {
     console.log(error)
     res.json(null)

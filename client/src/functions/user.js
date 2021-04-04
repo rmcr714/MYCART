@@ -17,3 +17,14 @@ export const getUserCart = async (authToken) =>
       authToken,
     },
   })
+
+export const saveAddress = async (authToken, addresses) =>
+  await axios.post(
+    `/api/user/address`,
+    { addresses },
+    {
+      headers: {
+        authToken,
+      },
+    }
+  )
