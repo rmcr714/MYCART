@@ -54,6 +54,9 @@ const SingleProduct = ({
 
       //dispatch to redux i.e add the local storage(added to cart products) data to redux state
       dispatch({ type: 'ADD_TO_CART', payload: unique })
+
+      //dispatch to show cart in side bar
+      dispatch({ type: 'DRAWER_TOGGLE', payload: true })
     }
   }
 

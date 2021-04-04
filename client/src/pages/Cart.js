@@ -2,8 +2,9 @@ import { toast } from 'react-toastify'
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { userCart } from '../functions/user'
 
-const Cart = () => {
+const Cart = ({ history }) => {
   const colors = ['Black', 'brown', 'silver', 'white', 'blue']
 
   //redux
@@ -19,6 +20,16 @@ const Cart = () => {
   //save to db on checkout
   const saveOrderToDb = () => {
     console.log('saving to db')
+    userCart(cart, user.token)
+      .then((res) => {
+        console.log(res)
+        if (res.data.ok) {
+        }
+      })
+      .catch((error) => {
+        console.log('cart save error', error)
+      })
+    history.push('/checkout')
   }
 
   //change color or select a new color
@@ -326,8 +337,9 @@ const Cart = () => {
               {user ? (
                 <button
                   type='button'
-                  className='btn btn-outline-primary btn-block'
+                  className='text-center btn btn-primary btn-raised btn-block'
                   disabled={!cart.length}
+                  onClick={saveOrderToDb}
                 >
                   go to checkout
                 </button>
@@ -335,7 +347,6 @@ const Cart = () => {
                 <button
                   type='button'
                   className='btn btn-outline-primary btn-block'
-                  onClick={saveOrderToDb}
                 >
                   <Link to={{ pathname: '/login', state: { from: 'cart' } }}>
                     {' '}
@@ -346,33 +357,12 @@ const Cart = () => {
             </div>
           </div>
 
-          <div className='mb-3'>
+          <div className='mb-2 ml-1'>
             <div className='pt-4'>
-              <a
-                className='dark-grey-text d-flex justify-content-between'
-                data-toggle='collapse'
-                href='#collapseExample'
-                aria-expanded='false'
-                aria-controls='collapseExample'
-              >
-                Add a discount code (optional)
-                <span>
-                  <i className='fas fa-chevron-down pt-1'></i>
-                </span>
-              </a>
-
-              <div className='collapse' id='collapseExample'>
-                <div className='mt-3'>
-                  <div className='md-form md-outline mb-0'>
-                    <input
-                      type='text'
-                      id='discount-code'
-                      className='form-control font-weight-light'
-                      placeholder='Enter discount code'
-                    />
-                  </div>
-                </div>
-              </div>
+              <p className='text-info mb-0'>
+                <i class='fas fa-receipt'></i>&nbsp;&nbsp;coupons can be applied
+                on the next page
+              </p>
             </div>
           </div>
         </div>

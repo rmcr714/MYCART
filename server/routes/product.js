@@ -1,4 +1,5 @@
 import express from 'express'
+import axios from 'axios'
 const router = express.Router()
 
 //middlewares
@@ -36,5 +37,15 @@ router.get('/product/related/:productId', listRelated)
 
 //search product functionality
 router.post('/search/filters', searchFilters)
+
+//making api call to check zip code
+router.post('/zip', async (req, res) => {
+  const { zip } = req.body
+
+  await axios
+    .get(`http://www.postalpincode.in/api/pincode/${zip}`, { timeout: 3000 })
+    .then(({ data }) => res.json(data))
+    .catch((error) => console.log(error.response))
+})
 
 export default router
