@@ -10,3 +10,10 @@ export const userCart = async (cart, authToken) =>
       },
     }
   )
+
+export const getUserCart = async (authToken) =>
+  await axios.get(`/api/user/cart`, {
+    headers: {
+      authToken,
+    },
+  })

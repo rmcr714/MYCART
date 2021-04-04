@@ -24,12 +24,12 @@ const Cart = ({ history }) => {
       .then((res) => {
         console.log(res)
         if (res.data.ok) {
+          history.push('/checkout')
         }
       })
       .catch((error) => {
         console.log('cart save error', error)
       })
-    history.push('/checkout')
   }
 
   //change color or select a new color
