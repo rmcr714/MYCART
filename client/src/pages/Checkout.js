@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { useSelector, useDispatch } from 'react-redux'
 import axios from 'axios'
+import Address from '../components/cards/Address'
 import { getUserCart, saveAddress } from '../functions/user'
 
 const Checkout = ({ history }) => {
   //redux state
-  const { user, cart } = useSelector((state) => ({ ...state }))
+  const { user, cart, userAddress } = useSelector((state) => ({ ...state }))
   const dispatch = useDispatch()
 
   //address states
@@ -96,6 +97,20 @@ const Checkout = ({ history }) => {
         toast.error('oops something went wrong, pls try again')
       } else if (res.data.message == 'address successfully saved') {
         toast.success(res.data.message)
+        dispatch({
+          type: 'CHECKOUT_ADDRESS_SAVED',
+          payload: {
+            firstName,
+            lastName,
+            address,
+            zip,
+            state,
+            city,
+            phone,
+            email,
+            addressType,
+          },
+        })
         setSavedAddress(!addressSaved)
       } else {
         toast.error(res.data.message)
@@ -397,20 +412,25 @@ const Checkout = ({ history }) => {
             </div>
           </div>
         </div>
-        {/* <hr />
-        <h5>Your addresses</h5> */}
+        <hr />
+        <h5>Your addresses</h5>
 
-        {/* {savedUserAddresses.length > 0 ? (
+        {savedUserAddresses.length > 0 ? (
           <div className='row mt-4 ml-1 mb-3'>
-            <div className='col-md-4'>
-              <div className='card'>
-                <div className='card-body'>hi</div>
+            {savedUserAddresses.map((data, i) => (
+              <div className='col-md-3'>
+                <Address
+                  data={data}
+                  setSavedAddress={setSavedAddress}
+                  addressSaved={addressSaved}
+                  authToken={user.token}
+                />
               </div>
-            </div>
+            ))}
           </div>
         ) : (
           <></>
-        )} */}
+        )}
       </section>
     </>
   )

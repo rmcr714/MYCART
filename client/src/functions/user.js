@@ -28,3 +28,14 @@ export const saveAddress = async (authToken, addresses) =>
       },
     }
   )
+
+export const deleteAddress = async (authToken, data) =>
+  await axios.post(
+    `/api/user/deleteaddress`,
+    { data },
+    {
+      headers: {
+        authToken,
+      },
+    }
+  )

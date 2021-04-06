@@ -97,3 +97,30 @@ export const saveAddress = async (req, res) => {
     res.json(null)
   }
 }
+
+//@desc  delete user address
+//@route DELETE /api/user/deleteaddress
+//@access private
+export const deleteAddress = async (req, res) => {
+  try {
+    const { data } = req.body
+
+    //find the customer
+    const user = await User.findOne({ email: req.user.email }).exec()
+
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: user._id },
+      { $pull: { addresses: { _id: data._id } } },
+      {
+        upsert: true,
+      }
+    ).exec()
+
+    console.log(updatedUser)
+
+    res.json({ message: 'ok' })
+  } catch (error) {
+    console.log(error)
+    res.json(null)
+  }
+}
