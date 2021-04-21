@@ -30,6 +30,7 @@ import SubHome from './pages/sub/SubHome'
 import Shop from './pages/Shop'
 import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
+import CreateCoupon from './pages/admin/coupon/CreateCoupon'
 
 import { auth } from './firebase'
 import { useDispatch } from 'react-redux'
@@ -103,6 +104,7 @@ const App = () => {
         <Route path='/shop' component={Shop} exact />
         <Route path='/cart' component={Cart} exact />
         <UserRoute path='/checkout' component={Checkout} exact />
+        <AdminRoute path='/admin/coupon' component={CreateCoupon} exact />
       </Switch>
       <Footer />
     </Router>

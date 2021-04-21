@@ -13,6 +13,7 @@ import userRoutes from './routes/user.js'
 import categoryRoutes from './routes/category.js'
 import subRoutes from './routes/sub.js'
 import productRoutes from './routes/product.js'
+import couponRoutes from './routes/coupon.js'
 import cloudinary from './routes/cloudinary.js'
 
 //db
@@ -34,6 +35,7 @@ app.use(
   categoryRoutes,
   subRoutes,
   productRoutes,
+  couponRoutes,
   cloudinary
 )
 
