@@ -14,7 +14,7 @@ export const create = async (req, res) => {
 }
 
 //@desc delete a coupon
-//@route DELETE /api/coupon/couponId
+//@route DELETE /api/coupon/:couponId
 //@access  Admin
 export const remove = async (req, res) => {
   try {
