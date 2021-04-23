@@ -39,3 +39,15 @@ export const deleteAddress = async (authToken, data) =>
       },
     }
   )
+
+export const applyCoupon = async (coupon, authToken) => {
+  return await axios.post(
+    `/api/user/cart/coupon`,
+    { coupon },
+    {
+      headers: {
+        authToken,
+      },
+    }
+  )
+}

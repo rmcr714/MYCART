@@ -1,6 +1,7 @@
 import Cart from '../models/cartModel.js'
 import User from '../models/userModel.js'
 import Product from '../models/productModel.js'
+import Coupon from '../models/couponModel.js'
 
 //@desc  save cart data in cart collection
 //@route POST /api/user/cart
@@ -122,5 +123,50 @@ export const deleteAddress = async (req, res) => {
   } catch (error) {
     console.log(error)
     res.json(null)
+  }
+}
+
+//@desc  apply coupon to user cart
+//@route POST /api/user/cart/coupon
+//@access private
+export const applyCouponToUserCart = async (req, res) => {
+  try {
+    const { coupon } = req.body
+
+    const user = await User.findOne({ email: req.user.email }).exec()
+    const validCoupon = await Coupon.findOne({ name: coupon }).exec()
+
+    if (validCoupon === null) {
+      await Cart.findOneAndUpdate(
+        { orderedBy: user._id },
+        { totalAfterDiscount: 0, couponCode: null },
+        {
+          new: true,
+        }
+      )
+      return res.json({ err: 'Invalid Coupon' })
+    }
+
+    const { products, cartTotal } = await Cart.findOne({ orderedBy: user._id })
+      .populate('products.product', '_id title price')
+      .exec()
+
+    //calculate total after discount
+    let totalAfterDiscount = (
+      cartTotal -
+      (cartTotal * validCoupon.discount) / 100
+    ).toFixed(2)
+
+    await Cart.findOneAndUpdate(
+      { orderedBy: user._id },
+      { totalAfterDiscount, couponCode: coupon },
+      {
+        new: true,
+      }
+    )
+
+    res.json({ totalAfterDiscount })
+  } catch (err) {
+    console.log(err)
   }
 }

@@ -3,12 +3,19 @@ import { toast } from 'react-toastify'
 import { useSelector, useDispatch } from 'react-redux'
 import axios from 'axios'
 import Address from '../components/cards/Address'
-import { getUserCart, saveAddress } from '../functions/user'
+import { getUserCart, saveAddress, applyCoupon } from '../functions/user'
+import _ from 'lodash'
 
 const Checkout = ({ history }) => {
   //redux state
   const { user, cart, userAddress } = useSelector((state) => ({ ...state }))
   const dispatch = useDispatch()
+
+  //coupon
+  const [coupon, setCoupon] = useState('')
+  const [totalAfterDiscount, setTotalAferDiscount] = useState(0)
+  const [discountError, setDiscountError] = useState('')
+  const [couponSuccess, setCouponSuccess] = useState('')
 
   //address states
   //first Name
@@ -118,8 +125,26 @@ const Checkout = ({ history }) => {
     })
   }
 
-  const checking = () => {
-    console.log('ok')
+  //apply coupon
+  const couponApply = () => {
+    console.log('hidsds', coupon)
+    applyCoupon(coupon, user.token)
+      .then((res) => {
+        console.log('Response applied', res.data)
+        if (res.data.err) {
+          setDiscountError(res.data.err)
+          setTotalAferDiscount(0)
+          dispatch({ type: 'COUPON_APPLIED', payload: false })
+        }
+        if (res.data.totalAfterDiscount) {
+          setTotalAferDiscount(res.data.totalAfterDiscount)
+          setCouponSuccess('coupon applied')
+          dispatch({ type: 'COUPON_APPLIED', payload: true })
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   }
   return (
     <>
@@ -334,7 +359,8 @@ const Checkout = ({ history }) => {
           <div className='col-lg-4'>
             <div className='card mb-4'>
               <div className='card-body'>
-                <h5 className='mb-3'>Order Summary</h5>
+                <h5 className='mb-2'>Order Summary</h5>
+                <hr />
 
                 <ul className='list-group list-group-flush'>
                   {products.length > 0 ? (
@@ -367,14 +393,32 @@ const Checkout = ({ history }) => {
                     <span>
                       <strong>{total ? total : 'no items in cart'}</strong>
                     </span>
+
+                    {totalAfterDiscount > 0 && (
+                      <>
+                        <div>
+                          <br />
+                          <br />
+                          <h5 className='text-success'>
+                            New price after discount
+                          </h5>
+                        </div>
+                        <span>
+                          <br />
+                          <h5 className='text-danger'>${totalAfterDiscount}</h5>
+                        </span>
+                      </>
+                    )}
                   </li>
                 </ul>
 
                 <button
                   type='button'
                   className='text-center btn btn-primary btn-raised btn-block'
-                  disabled={!savedUserAddresses.length > 0}
-                  onClick={() => checking()}
+                  disabled={
+                    savedUserAddresses.length == 0 || _.isEmpty(userAddress)
+                  }
+                  onClick={() => history.push('/payment')}
                 >
                   Place Order
                 </button>
@@ -404,7 +448,31 @@ const Checkout = ({ history }) => {
                         id='discount-code'
                         className='form-control font-weight-light'
                         placeholder='Enter discount code'
+                        value={coupon}
+                        onChange={(e) => {
+                          setCoupon(e.target.value)
+                          setDiscountError('')
+                          setCouponSuccess('')
+                        }}
+                        autoComplete='off'
                       />
+                      {discountError && (
+                        <p className='text-danger'>{discountError}</p>
+                      )}
+                      {couponSuccess && (
+                        <p className='text-success'>{couponSuccess}&nbsp;!!!</p>
+                      )}
+                      <br />
+                      <button
+                        type='button'
+                        className='text-center btn btn-success btn-raised '
+                        disabled={!coupon.length}
+                        onClick={() => {
+                          couponApply()
+                        }}
+                      >
+                        Apply coupon
+                      </button>
                     </div>
                   </div>
                 </div>

@@ -29,6 +29,7 @@ const Address = ({ data, setSavedAddress, addressSaved, authToken }) => {
   //select an address for delivery
   const selectAddress = () => {
     dispatch({ type: 'CHECKOUT_ADDRESS_SAVED', payload: selectedAddress })
+    toast.success('Address selected')
   }
 
   return (
