@@ -51,3 +51,23 @@ export const applyCoupon = async (coupon, authToken) => {
     }
   )
 }
+
+export const createOrder = async (order, authToken) => {
+  return await axios.post(
+    `/api/user/order`,
+    { order },
+    {
+      headers: {
+        authToken,
+      },
+    }
+  )
+}
+
+export const emptyUserCart = async (authToken) => {
+  return await axios.delete(`/api/user/cart`, {
+    headers: {
+      authToken,
+    },
+  })
+}

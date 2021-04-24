@@ -4,10 +4,11 @@ import { useSelector, useDispatch } from 'react-redux'
 import { createPaymentIntent } from '../functions/stripe'
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { createOrder, emptyUserCart } from '../functions/user'
 
 const StripeCheckout = ({ history }) => {
   const dispatch = useDispatch()
-  const { user, coupon } = useSelector((state) => ({ ...state }))
+  const { user, coupon, userAddress } = useSelector((state) => ({ ...state }))
 
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState(null)
@@ -73,6 +74,34 @@ const StripeCheckout = ({ history }) => {
       //success
       //will create an order and save it to db and then empty user cart
       console.log(JSON.stringify(payload))
+
+      createOrder(
+        {
+          stripeResponse: payload,
+          shippingAddress: userAddress,
+          paymentMethod: 'card',
+          totalPrice:
+            totalAfterDiscount > 0 && coupon ? totalAfterDiscount : cartTotal,
+          couponApplied: coupon,
+        },
+        user.token
+      ).then((res) => {
+        if (res.data.ok) {
+          //empty cart from localstorage
+          if (typeof window !== 'undefined') localStorage.removeItem('cart')
+          //empty cart from redux
+          dispatch({
+            type: 'ADD_TO_CART',
+            payload: [],
+          })
+          //reset coupon to false
+          dispatch({ type: 'COUPON_APPLIED', payload: false })
+
+          //empty cart from backend
+          emptyUserCart(user.token)
+        }
+        console.log(res)
+      })
       setError(null)
       setProcessing(false)
       setSuccess(true)

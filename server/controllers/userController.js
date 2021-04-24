@@ -2,6 +2,7 @@ import Cart from '../models/cartModel.js'
 import User from '../models/userModel.js'
 import Product from '../models/productModel.js'
 import Coupon from '../models/couponModel.js'
+import Order from '../models/orderModel.js'
 
 //@desc  save cart data in cart collection
 //@route POST /api/user/cart
@@ -166,6 +167,54 @@ export const applyCouponToUserCart = async (req, res) => {
     )
 
     res.json({ totalAfterDiscount })
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+//@desc  create order
+//@route POST /api/user/order
+//@access private
+export const createOrder = async (req, res) => {
+  try {
+    const {
+      shippingAddress,
+      paymentMethod,
+      totalPrice,
+      couponApplied,
+    } = req.body.order
+    const paymentIntent = req.body.order.stripeResponse.paymentIntent
+    const user = await User.findOne({ email: req.user.email }).exec()
+    let { products, couponCode } = await Cart.findOne({
+      orderedBy: user._id,
+    }).exec()
+
+    let newOrder = await Order({
+      products: products,
+      paymentIntent,
+      orderedBy: user._id,
+      shippingAddress,
+      paymentMethod,
+      totalPrice,
+      couponApplied,
+      couponCode,
+    }).save()
+
+    res.json({ ok: true })
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+//@desc  delete user cart
+//@route DELETE /api/user/cart
+//@access private
+export const emptyCart = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.user.email }).exec()
+    const cart = await Cart.findOneAndRemove({ orderedBy: user._id }).exec()
+
+    res.json(cart)
   } catch (err) {
     console.log(err)
   }
