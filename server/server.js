@@ -14,6 +14,7 @@ import categoryRoutes from './routes/category.js'
 import subRoutes from './routes/sub.js'
 import productRoutes from './routes/product.js'
 import couponRoutes from './routes/coupon.js'
+import stripeRoutes from './routes/stripe.js'
 import cloudinary from './routes/cloudinary.js'
 
 //db
@@ -36,6 +37,7 @@ app.use(
   subRoutes,
   productRoutes,
   couponRoutes,
+  stripeRoutes,
   cloudinary
 )
 
