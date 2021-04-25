@@ -71,3 +71,10 @@ export const emptyUserCart = async (authToken) => {
     },
   })
 }
+
+export const getUserOrders = async (authToken) =>
+  await axios.get(`/api/user/orders`, {
+    headers: {
+      authToken,
+    },
+  })
