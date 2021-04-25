@@ -3,6 +3,8 @@ import UserNav from '../../components/nav/UserNav'
 import { getUserOrders } from '../../functions/user'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
+import Invoice from '../../components/order/Invoice'
+import { PDFDownloadLink } from '@react-pdf/renderer'
 
 const History = () => {
   const [orders, setOrders] = useState([])
@@ -15,6 +17,16 @@ const History = () => {
     })
   }, [])
 
+  const showDownloadLink = (order) => (
+    <PDFDownloadLink
+      document={<Invoice order={order} />}
+      fileName={'invoice' + order._id}
+      className='btn btn-raised btn-danger btn-sm'
+    >
+      Download Invoice
+    </PDFDownloadLink>
+  )
+
   const showEachOrder = () =>
     orders.map((order, i) => (
       <div className='card mb-3'>
@@ -25,10 +37,7 @@ const History = () => {
         <div className='card-footer'>
           <div className='text-center'>
             {' '}
-            <button className='text-centre btn-danger'>
-              {' '}
-              Download Invoice
-            </button>
+            <div className='text-centre '> {showDownloadLink(order)}</div>
           </div>
           {order.couponApplied ? (
             <div className='h4 float-right'>
