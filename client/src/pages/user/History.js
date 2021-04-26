@@ -119,9 +119,15 @@ const History = ({ history }) => {
                   your order has not been placed
                 </p>
               )}
-              <p className='mb-2 text-muted  medium'>
-                payment status : <span>{order.paymentIntent.status}</span>
-              </p>
+              {order.paymentMethod === 'card' ? (
+                <p className='mb-2 text-muted  medium'>
+                  payment status : <span>{order.paymentIntent.status}</span>
+                </p>
+              ) : (
+                <p className='mb-2 text-muted  medium'>
+                  payment status : <span>cod</span>
+                </p>
+              )}
 
               <h6 className='mb-2  medium text-success'>
                 Order status : {order.orderStatus}

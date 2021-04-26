@@ -12,11 +12,12 @@ export const changeStatus = async (
   orderStatus,
   shippingBy,
   trackingId,
+  deliveredAt,
   authToken
 ) =>
   await axios.put(
     '/api/admin/order-status',
-    { orderId, orderStatus, shippingBy, trackingId },
+    { orderId, orderStatus, shippingBy, trackingId, deliveredAt },
     {
       headers: {
         authToken,

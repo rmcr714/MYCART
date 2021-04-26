@@ -1,26 +1,42 @@
 import React, { useState } from 'react'
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
+import DatePicker from 'react-datepicker'
 
 const OrderStatusUpdate = ({ orders, handleStatusUpdate }) => {
+  const [deliveryDate, setDeliveryDate] = useState(null)
   const [deliveryStatus, setDeliveryStatus] = useState('Not Processed')
   const [shippingBy, setShippingBy] = useState('Yet to assign')
   const [trackingId, setTrackingId] = useState('yet to be assigned')
   return (
     <>
       {orders.map((order) => (
-        <div key={order._id} className='row pb-5 card mr-4'>
+        <div key={order._id} className='row pb-5 card mr-4 mb-5'>
           <p>
             <span className='h6'>Order Id :{order._id}</span>
-            <span className='ml-5 h6 '>
-              Transaction Id : {order.paymentIntent.id}
-            </span>
+            {order.paymentMethod === 'card' ? (
+              <span className='ml-5 h6 '>
+                Transaction Id : {order.paymentIntent.id}
+              </span>
+            ) : (
+              <></>
+            )}
             <span className='ml-5 h6'>Amount : ${order.totalPrice}</span>
 
             <span className='ml-5 h6'>Method:{order.paymentMethod}</span>
-            <span className='ml-5 h6 '>
-              Payment : {order.paymentIntent.status}
-            </span>
+            {order.paymentMethod === 'card' ? (
+              <span className='ml-5 h6 '>
+                Payment : {order.paymentIntent.status}
+              </span>
+            ) : (
+              <span className='ml-5 h6 '>Payment : 'cod'</span>
+            )}
             <span className='ml-5 h6 '>Ordered on : {order.createdAt}</span>
+            <span className='ml-5 h6 text-info'>
+              Shipped by : {order.shippingBy}
+            </span>
+            <span className='ml-5 h6 text-danger'>
+              Tracking Id : {order.trackingId}
+            </span>
             <span className='ml-5 h6 alert-success'>
               status : {order.orderStatus}
             </span>
@@ -89,6 +105,15 @@ const OrderStatusUpdate = ({ orders, handleStatusUpdate }) => {
                 value={trackingId}
               ></input>
             </div>
+            <div className='col-md-4 h5'>Delivered date</div>
+            <div className='col-md-8'>
+              <DatePicker
+                className='form-control '
+                selected={deliveryDate}
+                required
+                onChange={(date) => setDeliveryDate(date)}
+              />
+            </div>
             <br />
             <button
               type='button'
@@ -98,7 +123,8 @@ const OrderStatusUpdate = ({ orders, handleStatusUpdate }) => {
                   order._id,
                   deliveryStatus,
                   shippingBy,
-                  trackingId
+                  trackingId,
+                  deliveryDate
                 )
                 setDeliveryStatus('Not Processed')
                 setShippingBy('Yet to assign')

@@ -16,13 +16,20 @@ const AdminDashboard = () => {
     })
   }, [])
 
-  const handleStatusUpdate = (orderId, orderStatus, shippingBy, trackingId) => {
+  const handleStatusUpdate = (
+    orderId,
+    orderStatus,
+    shippingBy,
+    trackingId,
+    deliveredAt
+  ) => {
     if (window.confirm('Do u wanna update')) {
       changeStatus(
         orderId,
         orderStatus,
         shippingBy,
         trackingId,
+        deliveredAt,
         user.token
       ).then((res) => {
         console.log('Successfully sent')

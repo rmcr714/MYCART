@@ -45,7 +45,9 @@ const Invoice = ({ order }) => (
           marginLeft: '6',
         }}
       >
-        GST Number : {'27AABCU' + order.paymentIntent.created}
+        {order.paymentMethod === 'card'
+          ? `GST Number : ${'27AABCU' + order.paymentIntent.created}`
+          : 'GST Number : Unavailabe'}
       </Text>
       <Text
         style={{
@@ -55,7 +57,9 @@ const Invoice = ({ order }) => (
           marginLeft: '6',
         }}
       >
-        Transaction Id: {order.paymentIntent.id}
+        {order.paymentMethod === 'card'
+          ? `Transaction Id: ${order.paymentIntent.id}`
+          : 'payment method : cash on delivery'}
       </Text>
 
       <Text
@@ -190,7 +194,9 @@ const Invoice = ({ order }) => (
           fontSize: '12',
         }}
       >
-        Total Paid : ${order.totalPrice}
+        {order.paymentMethod === 'card'
+          ? `Total Paid : $${order.totalPrice}`
+          : `Total to be paid: $${order.totalPrice}`}
       </Text>
       <Text
         style={{
@@ -200,7 +206,9 @@ const Invoice = ({ order }) => (
           fontSize: '12',
         }}
       >
-        Payment status : {order.paymentIntent.status}
+        {order.paymentMethod === 'card'
+          ? `Payment status : ${order.paymentIntent.status}`
+          : 'Payment status: on Delivery'}
       </Text>
       <Text
         style={{
