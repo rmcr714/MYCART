@@ -48,6 +48,15 @@ const orderSchema = mongoose.Schema(
       type: String,
       default: null,
     },
+    shippingBy: {
+      type: String,
+      default: 'Yet to assign',
+      enum: ['BLUEDART', 'DHL', 'FEDEX', 'WHL', 'Yet to assign'],
+    },
+    trackingId: {
+      type: String,
+      default: 'Yet to be assigned',
+    },
   },
   {
     timestamps: true,

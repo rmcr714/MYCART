@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { LoadingOutlined } from '@ant-design/icons'
-import './tracking.css'
+import '../css/order/tracking.css'
 import { getTrackingDetails } from '../../functions/user'
 
 const Tracking = ({ match }) => {
@@ -73,11 +73,13 @@ const Tracking = ({ match }) => {
                     <div className='col'>
                       {' '}
                       <strong>Estimated Delivery time:</strong> <br />
-                      29 nov 2019{' '}
+                      {order.orderStatus === 'Completed'
+                        ? 'Delivered'
+                        : ' A week from now'}
                     </div>
                     <div className='col'>
                       {' '}
-                      <strong>Shipping BY:</strong> <br /> BLUEDART, |{' '}
+                      <strong>Shipping BY:</strong> <br /> {order.shippingBy}, |{' '}
                       <i className='fa fa-phone'></i> +1598675986{' '}
                     </div>
                     <div className='col'>
@@ -88,14 +90,17 @@ const Tracking = ({ match }) => {
                     </div>
                     <div className='col'>
                       {' '}
-                      <strong>Tracking #:</strong> <br /> BD045903594059{' '}
+                      <strong>Tracking #:</strong> <br /> {order.trackingId}{' '}
                     </div>
                   </div>
                 </article>
                 <div className='track'>
                   <div
                     className={
-                      order.orderStatus == 'Not Processed'
+                      order.orderStatus === 'Not Processed' ||
+                      order.orderStatus === 'Dispatched' ||
+                      order.orderStatus === 'Completed' ||
+                      order.orderStatus === 'Processing'
                         ? 'step active'
                         : 'step'
                     }
@@ -105,11 +110,16 @@ const Tracking = ({ match }) => {
                       {' '}
                       <i className='fa fa-check'></i>{' '}
                     </span>{' '}
-                    <span className='text'>Order confirmed</span>{' '}
+                    {order.orderStatus === 'Cancelled' ? (
+                      <span className='text text-danger'>Cancelled</span>
+                    ) : (
+                      <span className='text'>Order confirmed</span>
+                    )}
                   </div>
                   <div
                     className={
-                      order.orderStatus == ('Dispatched' || 'Completed')
+                      order.orderStatus === 'Dispatched' ||
+                      order.orderStatus === 'Completed'
                         ? 'step active'
                         : 'step'
                     }
@@ -123,7 +133,8 @@ const Tracking = ({ match }) => {
                   </div>
                   <div
                     className={
-                      order.orderStatus == ('Dispatched' || 'Completed')
+                      order.orderStatus === 'Dispatched' ||
+                      order.orderStatus === 'Completed'
                         ? 'step active'
                         : 'step'
                     }
@@ -135,22 +146,18 @@ const Tracking = ({ match }) => {
                     </span>{' '}
                     <span className='text'> On the way </span>{' '}
                   </div>
-                  <div className='step'>
+                  <div
+                    className={
+                      order.orderStatus === 'Completed' ? 'step active' : 'step'
+                    }
+                  >
                     {' '}
                     <span className='icon'>
                       {' '}
                       <i className='fa fa-box'></i>{' '}
                     </span>{' '}
                     <br />
-                    <span
-                      className={
-                        order.orderStatus == 'Completed'
-                          ? 'step active'
-                          : 'step'
-                      }
-                    >
-                      Ready for pickup
-                    </span>{' '}
+                    <span className='text'>Ready for pickup</span>{' '}
                   </div>
                 </div>
                 <hr />

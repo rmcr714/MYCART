@@ -16,6 +16,7 @@ import productRoutes from './routes/product.js'
 import couponRoutes from './routes/coupon.js'
 import stripeRoutes from './routes/stripe.js'
 import cloudinary from './routes/cloudinary.js'
+import adminRoutes from './routes/admin.js'
 
 //db
 connectDB()
@@ -38,6 +39,7 @@ app.use(
   productRoutes,
   couponRoutes,
   stripeRoutes,
+  adminRoutes,
   cloudinary
 )
 
