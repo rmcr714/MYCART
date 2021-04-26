@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import UserNav from '../../components/nav/UserNav'
 import { getUserOrders } from '../../functions/user'
-import { useDispatch, useSelector } from 'react-redux'
-import { toast } from 'react-toastify'
+import { useSelector } from 'react-redux'
+
 import Invoice from '../../components/order/Invoice'
 import { PDFDownloadLink } from '@react-pdf/renderer'
+import { LoadingOutlined } from '@ant-design/icons'
 
-const History = () => {
+const History = ({ history }) => {
   const [orders, setOrders] = useState([])
   const { user } = useSelector((state) => ({ ...state }))
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
+    setLoading(true)
     getUserOrders(user.token).then((res) => {
       console.log(res.data)
       setOrders(res.data.userOrders)
+      setLoading(false)
     })
   }, [])
 
@@ -52,6 +56,10 @@ const History = () => {
       </div>
     ))
 
+  const showTracking = (orderId) => {
+    history.push(`/tracking/${orderId}`)
+  }
+
   const showOrderInTable = (order, i) =>
     order.products.map((product) => (
       <div key={i} className='mt-3 ml-3  mr-3 card'>
@@ -59,7 +67,13 @@ const History = () => {
           <btton type='button' className='btn btn-raised btn-info'>
             OD{order._id}
           </btton>
-          <button type='button' class='btn btn-raised active float-right'>
+          <button
+            type='button'
+            class='btn btn-raised active float-right'
+            onClick={() => {
+              showTracking(order._id)
+            }}
+          >
             <i className='fas fa-map-marker-alt text-info'></i>&nbsp;Track
           </button>
         </div>
@@ -142,14 +156,21 @@ const History = () => {
         <div className='col-md-2'>
           <UserNav />
         </div>
-        <div className='col mt-2 '>
-          {orders.length > 0 ? (
-            <h4>Your Orders</h4>
-          ) : (
-            <h4>'No orders avaiable'</h4>
-          )}
-          {orders.length > 0 && showEachOrder()}
-        </div>
+        {loading ? (
+          <div className='text-center mt-4 '>
+            {' '}
+            <LoadingOutlined className='h1 text-primary' />
+          </div>
+        ) : (
+          <div className='col mt-2 '>
+            {orders.length > 0 ? (
+              <h4>Your Orders</h4>
+            ) : (
+              <h4>'No orders avaiable'</h4>
+            )}
+            {orders.length > 0 && showEachOrder()}
+          </div>
+        )}
       </div>
     </div>
   )

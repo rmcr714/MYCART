@@ -78,3 +78,10 @@ export const getUserOrders = async (authToken) =>
       authToken,
     },
   })
+
+export const getTrackingDetails = async (authToken, orderId) =>
+  await axios.get(`/api/user/tracking/${orderId}`, {
+    headers: {
+      authToken,
+    },
+  })

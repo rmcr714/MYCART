@@ -11,6 +11,7 @@ import {
   createOrder,
   emptyCart,
   orders,
+  orderTracking,
 } from '../controllers/userController.js'
 
 const router = express.Router()
@@ -27,5 +28,8 @@ router.post('/user/cart/coupon', authCheck, applyCouponToUserCart)
 //order routes
 router.post('/user/order', authCheck, createOrder)
 router.get('/user/orders', authCheck, orders)
+
+//get particular order for tracking
+router.get('/user/tracking/:orderId', authCheck, orderTracking)
 
 export default router

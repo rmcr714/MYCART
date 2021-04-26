@@ -243,3 +243,29 @@ export const orders = async (req, res) => {
     console.log(err)
   }
 }
+
+//@desc  get a aprticular order for tracking
+//@route GET /api/user/tracking/:orderId
+//@access private
+export const orderTracking = async (req, res) => {
+  try {
+    console.log(req.params.orderId)
+
+    const user = await User.findOne({ email: req.user.email })
+    const userOrders = await Order.find({ orderedBy: user._id })
+
+    const exists = userOrders.some((data) => data._id == req.params.orderId)
+
+    if (exists) {
+      const requiredOrder = await Order.findById({ _id: req.params.orderId })
+        .populate('products.product')
+        .exec()
+
+      res.json({ requiredOrder })
+    } else {
+      res.json({ message: 'Unavailable' })
+    }
+  } catch (err) {
+    console.log(err)
+  }
+}

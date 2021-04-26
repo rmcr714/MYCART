@@ -32,6 +32,7 @@ import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
 import CreateCoupon from './pages/admin/coupon/CreateCoupon'
 import Payment from './pages/Payment'
+import Tracking from './components/order/Tracking'
 
 import { auth } from './firebase'
 import { useDispatch } from 'react-redux'
@@ -107,6 +108,7 @@ const App = () => {
         <UserRoute path='/checkout' component={Checkout} exact />
         <AdminRoute path='/admin/coupon' component={CreateCoupon} exact />
         <UserRoute path='/payment' component={Payment} exact />
+        <UserRoute path='/tracking/:orderId' component={Tracking} exact />
       </Switch>
       <Footer />
     </Router>
