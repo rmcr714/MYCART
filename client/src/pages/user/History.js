@@ -33,7 +33,7 @@ const History = ({ history }) => {
 
   const showEachOrder = () =>
     orders.map((order, i) => (
-      <div className='card mb-3'>
+      <div key={i} className='card mb-3'>
         <h6 className='text-center mt-2'>Order {order._id}</h6>
         {showOrderInTable(order, i)}
         <br />
@@ -61,15 +61,15 @@ const History = ({ history }) => {
   }
 
   const showOrderInTable = (order, i) =>
-    order.products.map((product) => (
-      <div key={i} className='mt-3 ml-3  mr-3 card'>
+    order.products.map((product, j) => (
+      <div key={j} className='mt-3 ml-3  mr-3 card'>
         <div className='card-header bg-light'>
-          <btton type='button' className='btn btn-raised btn-info'>
+          <button type='button' className='btn btn-raised btn-warning'>
             OD{order._id}
-          </btton>
+          </button>
           <button
             type='button'
-            class='btn btn-raised active float-right'
+            className='btn btn-raised active float-right'
             onClick={() => {
               showTracking(order._id)
             }}
@@ -134,8 +134,11 @@ const History = ({ history }) => {
               </h6>
             </div>
             <div className='col-md-1 offset-1'>
-              <button type='button' class='btn btn-raised active float-right'>
-                <i class='fas fa-times'></i>&nbsp;Cancel
+              <button
+                type='button'
+                className='btn btn-raised active float-right'
+              >
+                <i className='fas fa-times'></i>&nbsp;Cancel
               </button>
             </div>
           </div>
@@ -157,7 +160,7 @@ const History = ({ history }) => {
       </div>
     ))
   return (
-    <div className='container-fluid mt-5'>
+    <div className='container-fluid mt-5 '>
       <div className='row'>
         <div className='col-md-2'>
           <UserNav />

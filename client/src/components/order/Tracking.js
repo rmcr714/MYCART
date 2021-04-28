@@ -108,7 +108,10 @@ const Tracking = ({ match }) => {
                     {' '}
                     <span className='icon'>
                       {' '}
-                      <i className='fa fa-check'></i>{' '}
+                      <i
+                        className='fa fa-check'
+                        style={{ color: 'white' }}
+                      ></i>{' '}
                     </span>{' '}
                     {order.orderStatus === 'Cancelled' ? (
                       <span className='text text-danger'>Cancelled</span>
@@ -127,7 +130,10 @@ const Tracking = ({ match }) => {
                     {' '}
                     <span className='icon'>
                       {' '}
-                      <i className='fa fa-user'></i>{' '}
+                      <i
+                        className='fa fa-user'
+                        style={{ color: 'white' }}
+                      ></i>{' '}
                     </span>{' '}
                     <span className='text'> Picked by courier</span>{' '}
                   </div>
@@ -142,7 +148,10 @@ const Tracking = ({ match }) => {
                     {' '}
                     <span className='icon'>
                       {' '}
-                      <i className='fa fa-truck'></i>{' '}
+                      <i
+                        className='fa fa-truck'
+                        style={{ color: 'white' }}
+                      ></i>{' '}
                     </span>{' '}
                     <span className='text'> On the way </span>{' '}
                   </div>
@@ -154,7 +163,10 @@ const Tracking = ({ match }) => {
                     {' '}
                     <span className='icon'>
                       {' '}
-                      <i className='fa fa-box'></i>{' '}
+                      <i
+                        className='fa fa-box'
+                        style={{ color: 'white' }}
+                      ></i>{' '}
                     </span>{' '}
                     <br />
                     <span className='text'>Ready for pickup</span>{' '}
@@ -167,7 +179,11 @@ const Tracking = ({ match }) => {
                   {' '}
                   <Link to='/user/history'>
                     {' '}
-                    <i className='fa fa-chevron-left'></i> Back to orders
+                    <i
+                      className='fa fa-chevron-left'
+                      style={{ color: 'blue' }}
+                    ></i>{' '}
+                    Back to orders
                   </Link>
                 </a>
               </div>

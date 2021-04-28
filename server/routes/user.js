@@ -12,6 +12,9 @@ import {
   emptyCart,
   orders,
   orderTracking,
+  addToWishList,
+  wishList,
+  removeFromWishList,
 } from '../controllers/userController.js'
 
 const router = express.Router()
@@ -31,5 +34,10 @@ router.get('/user/orders', authCheck, orders)
 
 //get particular order for tracking
 router.get('/user/tracking/:orderId', authCheck, orderTracking)
+
+//wishlist routes
+router.post('/user/wishlist', authCheck, addToWishList)
+router.get('/user/wishlist', authCheck, wishList)
+router.put('/user/wishlist', authCheck, removeFromWishList)
 
 export default router

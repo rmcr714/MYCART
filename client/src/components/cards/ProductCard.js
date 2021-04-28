@@ -81,12 +81,12 @@ const ProductCard = ({ product }) => {
           </Tooltip>,
         ]}
       >
-        <toolTip title={title}>
+        <Tooltip title={title}>
           <Meta
             title={title}
             description={`${description && description.substring(0, 70)} . . .`}
           />
-        </toolTip>
+        </Tooltip>
 
         {product && product.ratings && ratings.length > 0 ? (
           <div className='pt-3 pb-1'>{RatingsAverage(product)}</div>

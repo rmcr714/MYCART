@@ -37,16 +37,14 @@ const BestSellers = () => {
 
   return (
     <>
-      <h4 className='p-2 mt-2 mb-4 ml-2 display-4 text-primary '>
-        Best Sellers
-      </h4>
+      <h4 className='p-2 mt-2  ml-2 display-4 text-primary '>Best Sellers</h4>
       {loading ? (
         <LoadingCard count={3} />
       ) : (
         <div className='container'>
           <div className='row'>
             {products.map((product) => (
-              <div className='col-md-4 p-3' key={product._id}>
+              <div className='col-md-4 ' key={product._id}>
                 <ProductCard product={product} />
               </div>
             ))}

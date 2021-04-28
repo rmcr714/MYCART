@@ -244,7 +244,7 @@ export const orders = async (req, res) => {
   }
 }
 
-//@desc  get a aprticular order for tracking
+//@desc  get a particular order for tracking
 //@route GET /api/user/tracking/:orderId
 //@access private
 export const orderTracking = async (req, res) => {
@@ -265,6 +265,59 @@ export const orderTracking = async (req, res) => {
     } else {
       res.json({ message: 'Unavailable' })
     }
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+//@desc  add products to wishlist
+//@route POST /api/user/wishlist
+//@access private
+export const addToWishList = async (req, res) => {
+  try {
+    const { productId } = req.body
+    const user = await User.findOneAndUpdate(
+      { email: req.user.email },
+      {
+        $addToSet: { wishlist: productId },
+      },
+      { new: true }
+    ).exec()
+
+    res.json({ ok: true })
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+//@desc  Get products in users wishlist
+//@route GET /api/user/wishlist
+//@access private
+export const wishList = async (req, res) => {
+  try {
+    const wishlist = await User.findOne({ email: req.user.email })
+      .select('wishlist')
+      .populate('wishlist')
+      .exec()
+
+    res.json(wishlist)
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+//@desc  remove items from  wishlist
+//@route PUT /api/user/wishlist
+//@access private
+export const removeFromWishList = async (req, res) => {
+  try {
+    const { productId } = req.body
+    const user = await User.findOneAndUpdate(
+      { email: req.user.email },
+      { $pull: { wishlist: productId } }
+    ).exec()
+
+    res.json({ ok: true })
   } catch (err) {
     console.log(err)
   }

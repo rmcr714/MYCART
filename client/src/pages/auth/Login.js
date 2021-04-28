@@ -19,28 +19,27 @@ const Login = ({ history }) => {
 
   useEffect(() => {
     let intended = history.location.state
-    if(intended) {return}
-    else{
+    if (intended) {
+      return
+    } else {
       if (user && user.token) {
         history.push('/')
       }
     }
-    
   }, [user, history])
 
   //role based redirect
   const roleBasedRedirect = (res) => {
     let intended = history.location.state
-    if(intended){
+    if (intended) {
       history.push(intended.from)
-    }else{
+    } else {
       if (res.data.role === 'admin') {
         history.push('/admin/dashboard')
       } else {
         history.push('/user/history')
       }
     }
-  
   }
 
   const handleSubmit = async (e) => {
@@ -177,6 +176,8 @@ const Login = ({ history }) => {
           </Button>
         </div>
       </div>
+      <br />
+      <br />
       <br />
       <br />
       <br />

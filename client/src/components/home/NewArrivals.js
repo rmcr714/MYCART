@@ -36,16 +36,14 @@ const NewArrivals = () => {
 
   return (
     <>
-      <h4 className='p-2 mt-2 mb-4 ml-2 display-4 text-primary '>
-        New Arrivals
-      </h4>
+      <h4 className='p-2 mt-2  ml-2 display-4 text-primary '>New Arrivals</h4>
       {loading ? (
         <LoadingCard count={3} />
       ) : (
         <div className='container'>
           <div className='row'>
             {products.map((product) => (
-              <div className='col-md-4 p-3' key={product._id}>
+              <div className='col-md-4 ' key={product._id}>
                 <ProductCard product={product} />
               </div>
             ))}
@@ -53,7 +51,7 @@ const NewArrivals = () => {
         </div>
       )}
       <div className='row'>
-        <nav className='col-md-4 offset-md-4 text-center pt-4 p-3'>
+        <nav className='col-md-4 offset-md-4 text-center  p-2'>
           <Pagination
             defaultCurrent={1}
             total={(productsCount / 3) * 10}

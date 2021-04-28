@@ -67,7 +67,10 @@ const Product = ({ match }) => {
     <>
       <Link to='/' className='button'>
         {' '}
-        <button type='button' className='btn btn-dark mt-5 ml-2'>
+        <br />
+        <br />
+        <br />
+        <button type='button' className='btn btn-dark   ml-2'>
           Go back
         </button>
       </Link>

@@ -85,3 +85,32 @@ export const getTrackingDetails = async (authToken, orderId) =>
       authToken,
     },
   })
+
+export const getWishList = async (authToken) =>
+  await axios.get(`/api/user/wishlist`, {
+    headers: {
+      authToken,
+    },
+  })
+
+export const removeWishList = async (productId, authToken) =>
+  await axios.put(
+    `/api/user/wishlist`,
+    { productId },
+    {
+      headers: {
+        authToken,
+      },
+    }
+  )
+
+export const addToWishList = async (productId, authToken) =>
+  await axios.post(
+    `/api/user/wishlist`,
+    { productId },
+    {
+      headers: {
+        authToken,
+      },
+    }
+  )

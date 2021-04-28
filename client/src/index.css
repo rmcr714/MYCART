@@ -15,3 +15,8 @@
 #searchFieldText {
   box-shadow: 10px 10px 5px grey;
 }
+
+.bmd-form-group {
+  position: relative;
+  padding-top: 0px;
+}

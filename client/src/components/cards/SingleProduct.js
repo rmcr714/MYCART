@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card, Tabs, Tooltip } from 'antd'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import _ from 'lodash'
 import 'react-responsive-carousel/lib/styles/carousel.min.css' // requires a loader
 import { Carousel } from 'react-responsive-carousel'
@@ -18,6 +18,11 @@ import ReviewsCard from './ReviewsCard'
 import RatingsAverage from '../../functions/RatingsAverage'
 
 import ProductListGroup from '../listgroups/ProductListGroup'
+import {
+  addToWishList,
+  getWishList,
+  removeWishList,
+} from '../../functions/user'
 
 const { Meta } = Card
 const { TabPane } = Tabs
@@ -33,9 +38,26 @@ const SingleProduct = ({
   const { title, images, description, _id, ratings } = product
   const [toolTip, setToolTip] = useState('click to add to cart')
 
+  const [productsInWishList, setProductsInWishList] = useState([])
+
   //redux
   const { user, cart } = useSelector((state) => ({ ...state }))
   const dispatch = useDispatch()
+
+  //check if product already in wishlist
+  useEffect(() => {
+    if (user == null) {
+    } else {
+      getWishList(user.token).then((res) => {
+        console.log(res.data)
+        if (res.data.wishlist.length === 0) {
+          setProductsInWishList([])
+        } else {
+          setProductsInWishList(res.data.wishlist)
+        }
+      })
+    }
+  }, [])
 
   //add to cart
   const handleAddToCart = () => {
@@ -58,6 +80,46 @@ const SingleProduct = ({
       //dispatch to show cart in side bar
       dispatch({ type: 'DRAWER_TOGGLE', payload: true })
     }
+  }
+
+  //add to wish list
+  const handleAddToWishList = (e) => {
+    e.preventDefault()
+    addToWishList(_id, user.token).then((res) => {
+      console.log('added to wishlist')
+      getWishList(user.token).then((res) => {
+        console.log(res.data)
+        if (user == null) {
+        } else {
+          getWishList(user.token).then((res) => {
+            console.log(res.data)
+            if (res.data.wishlist.length === 0) {
+              setProductsInWishList([])
+            } else {
+              setProductsInWishList(res.data.wishlist)
+            }
+          })
+        }
+      })
+    })
+  }
+
+  //remove from wish list
+  const removeFromWishList = () => {
+    removeWishList(_id, user.token).then((res) => {
+      console.log(res, `successfully removed`)
+      if (user == null) {
+      } else {
+        getWishList(user.token).then((res) => {
+          console.log(res.data)
+          if (res.data.wishlist.length === 0) {
+            setProductsInWishList([])
+          } else {
+            setProductsInWishList(res.data.wishlist)
+          }
+        })
+      }
+    })
   }
 
   return (
@@ -116,11 +178,27 @@ const SingleProduct = ({
                 </a>
               )}
             </Tooltip>,
-            <Link to='/'>
-              <HeartOutlined className='text-danger' />
-              <br />
-              Add to wishlist
-            </Link>,
+            <Tooltip>
+              {productsInWishList.length > 0 &&
+              productsInWishList.some((el) => el._id === _id) ? (
+                <a onClick={removeFromWishList}>
+                  <i
+                    className='fas fa-heart fa-lg'
+                    style={{ color: ' #e75480' }}
+                  >
+                    {' '}
+                  </i>
+                  <br />
+                  Added to wishlist
+                </a>
+              ) : (
+                <a onClick={handleAddToWishList} disabled={user == null}>
+                  <HeartOutlined className='text-danger' />
+                  <br />
+                  add to wishlist
+                </a>
+              )}
+            </Tooltip>,
             <RatingModal reviewSubmit={reviewSubmit}>
               <StarRating
                 name={_id}
