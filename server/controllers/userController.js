@@ -232,6 +232,9 @@ export const emptyCart = async (req, res) => {
   }
 }
 
+//@desc  get user orders
+//@route GET /api/user/order
+//@access private
 export const orders = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.user.email })
@@ -316,6 +319,56 @@ export const removeFromWishList = async (req, res) => {
       { email: req.user.email },
       { $pull: { wishlist: productId } }
     ).exec()
+
+    res.json({ ok: true })
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+//@desc  create cod orders
+//@route GET /api/user/cod-order
+//@access private
+export const cashOnDelivery = async (req, res) => {
+  try {
+    const { shippingAddress, paymentMethod, couponApplied } = req.body.order
+    console.log(shippingAddress, paymentMethod, couponApplied)
+
+    const user = await User.findOne({ email: req.user.email }).exec()
+    let {
+      products,
+      couponCode,
+      totalAfterDiscount,
+      cartTotal,
+    } = await Cart.findOne({
+      orderedBy: user._id,
+    }).exec()
+
+    let newOrder = await Order({
+      products: products,
+
+      orderedBy: user._id,
+      shippingAddress,
+      paymentMethod,
+      totalPrice:
+        totalAfterDiscount > 0 && couponApplied
+          ? totalAfterDiscount
+          : cartTotal,
+      couponApplied,
+      couponCode,
+    }).save()
+
+    //increment count,
+    let bulkOption = products.map((item) => {
+      return {
+        updateOne: {
+          filter: { _id: item.product._id },
+          update: { $inc: { quantity: -item.count, sold: +item.count } },
+        },
+      }
+    })
+
+    let updated = await Product.bulkWrite(bulkOption, {})
 
     res.json({ ok: true })
   } catch (err) {

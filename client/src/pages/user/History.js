@@ -16,7 +16,12 @@ const History = ({ history }) => {
     setLoading(true)
     getUserOrders(user.token).then((res) => {
       console.log(res.data)
-      setOrders(res.data.userOrders)
+      setOrders(
+        res.data.userOrders.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
+      )
       setLoading(false)
     })
   }, [])
@@ -110,7 +115,7 @@ const History = ({ history }) => {
                 Delivery Date :{' '}
                 {order.deliveredAt ? order.deliveredAt : 'To be Updated Soon'}
               </h6>
-              {order.paymentIntent.status == 'succeeded' ? (
+              {/* {order.paymentIntent.status == 'succeeded' ? (
                 <p className='mb-2 text-muted  medium'>
                   your order has been placed
                 </p>
@@ -118,7 +123,7 @@ const History = ({ history }) => {
                 <p className='mb-2 text-muted  medium'>
                   your order has not been placed
                 </p>
-              )}
+              )} */}
               {order.paymentMethod === 'card' ? (
                 <p className='mb-2 text-muted  medium'>
                   payment status : <span>{order.paymentIntent.status}</span>

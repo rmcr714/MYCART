@@ -114,3 +114,14 @@ export const addToWishList = async (productId, authToken) =>
       },
     }
   )
+
+export const createCodOrder = async (order, authToken) =>
+  await axios.post(
+    `/api/user/cod-order`,
+    { order },
+    {
+      headers: {
+        authToken,
+      },
+    }
+  )

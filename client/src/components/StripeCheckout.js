@@ -5,8 +5,11 @@ import { createPaymentIntent } from '../functions/stripe'
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { createOrder, emptyUserCart } from '../functions/user'
+import { useHistory } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
-const StripeCheckout = ({ history }) => {
+const StripeCheckout = () => {
+  const history = useHistory()
   const dispatch = useDispatch()
   const { user, coupon, userAddress } = useSelector((state) => ({ ...state }))
 
@@ -87,6 +90,7 @@ const StripeCheckout = ({ history }) => {
         user.token
       ).then((res) => {
         if (res.data.ok) {
+          toast.success('Order successfully placed')
           //empty cart from localstorage
           if (typeof window !== 'undefined') localStorage.removeItem('cart')
           //empty cart from redux
@@ -99,6 +103,7 @@ const StripeCheckout = ({ history }) => {
 
           //empty cart from backend
           emptyUserCart(user.token)
+          history.push('/user/history')
         }
         console.log(res)
       })

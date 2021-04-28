@@ -15,6 +15,7 @@ import {
   addToWishList,
   wishList,
   removeFromWishList,
+  cashOnDelivery,
 } from '../controllers/userController.js'
 
 const router = express.Router()
@@ -39,5 +40,6 @@ router.get('/user/tracking/:orderId', authCheck, orderTracking)
 router.post('/user/wishlist', authCheck, addToWishList)
 router.get('/user/wishlist', authCheck, wishList)
 router.put('/user/wishlist', authCheck, removeFromWishList)
+router.post('/user/cod-order', authCheck, cashOnDelivery)
 
 export default router

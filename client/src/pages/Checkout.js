@@ -3,12 +3,22 @@ import { toast } from 'react-toastify'
 import { useSelector, useDispatch } from 'react-redux'
 import axios from 'axios'
 import Address from '../components/cards/Address'
-import { getUserCart, saveAddress, applyCoupon } from '../functions/user'
+import {
+  getUserCart,
+  saveAddress,
+  applyCoupon,
+  createCodOrder,
+  emptyUserCart,
+} from '../functions/user'
 import _ from 'lodash'
 
 const Checkout = ({ history }) => {
   //redux state
-  const { user, cart, userAddress } = useSelector((state) => ({ ...state }))
+  const { user, cart, userAddress } = useSelector((state) => ({
+    ...state,
+  }))
+
+  const couponStatus = useSelector((state) => state.coupon)
   const dispatch = useDispatch()
 
   //coupon
@@ -44,6 +54,10 @@ const Checkout = ({ history }) => {
   //received cart state
   const [products, setProducts] = useState([])
   const [total, setTotal] = useState(0)
+
+  //payment states
+  const [card, setCard] = useState(true)
+  const [cod, setCod] = useState(false)
 
   useEffect(() => {
     if (cart.length == 0) {
@@ -145,6 +159,39 @@ const Checkout = ({ history }) => {
       .catch((err) => {
         console.log(err)
       })
+  }
+
+  const placeOrder = () => {
+    if (cod == true) {
+      console.log('cod')
+      createCodOrder(
+        {
+          shippingAddress: userAddress,
+          paymentMethod: 'cash on delivery',
+          couponApplied: couponStatus,
+        },
+        user.token
+      ).then((res) => {
+        if (res.data.ok) {
+          //empty cart from localstorage
+          if (typeof window !== 'undefined') localStorage.removeItem('cart')
+          //empty cart from redux
+          dispatch({
+            type: 'ADD_TO_CART',
+            payload: [],
+          })
+          //reset coupon to false
+          dispatch({ type: 'COUPON_APPLIED', payload: false })
+
+          //empty cart from backend
+          emptyUserCart(user.token)
+        }
+        history.push('/user/history')
+        console.log(res)
+      })
+    } else {
+      history.push('/payment')
+    }
   }
   return (
     <>
@@ -418,7 +465,10 @@ const Checkout = ({ history }) => {
                   disabled={
                     savedUserAddresses.length == 0 || _.isEmpty(userAddress)
                   }
-                  onClick={() => history.push('/payment')}
+                  // onClick={() => history.push('/payment')}
+                  onClick={() => {
+                    placeOrder()
+                  }}
                 >
                   Place Order
                 </button>
@@ -475,6 +525,36 @@ const Checkout = ({ history }) => {
                       </button>
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+            <div className='card mt-2'>
+              <div className='card-header h5 bg-light'>Payment method</div>
+              <div className='card-body'>
+                <div class='form-check'>
+                  <input
+                    class='form-check-input'
+                    type='radio'
+                    name='paymentMethod'
+                    id='exampleRadios1'
+                    onClick={() => setCod(false)}
+                    checked
+                  />
+                  <label class='form-check-label' for='exampleRadios1'>
+                    Card
+                  </label>
+                </div>
+                <div class='form-check'>
+                  <input
+                    class='form-check-input'
+                    type='radio'
+                    name='paymentMethod'
+                    id='exampleRadios2'
+                    onClick={() => setCod(true)}
+                  />
+                  <label class='form-check-label' for='exampleRadios2'>
+                    Cash on delivery
+                  </label>
                 </div>
               </div>
             </div>

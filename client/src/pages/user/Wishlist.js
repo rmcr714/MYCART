@@ -101,7 +101,9 @@ const Wishlist = () => {
                           </li>
                         </ul>
                         <p className='mb-3'>{product.description}</p>
-                        <h5 className='mb-0 font-weight-semibold'>$459.99</h5>
+                        <h5 className='mb-0 font-weight-semibold'>
+                          ${product.price}
+                        </h5>
                       </div>
                       <div className='mt-3 mt-lg-0 ml-lg-3 text-center'>
                         <i
@@ -136,6 +138,19 @@ const Wishlist = () => {
           )}
         </div>
       </div>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
     </div>
   )
 }
