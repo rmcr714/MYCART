@@ -3,6 +3,7 @@ const router = express.Router()
 
 //middlewares
 import { authCheck, adminCheck } from '../middlewares/auth.js'
+import { listAllSubsCache } from '../middlewares/subCache.js'
 
 //controller
 import {
@@ -15,7 +16,7 @@ import {
 
 //routes
 router.post('/sub', authCheck, adminCheck, create)
-router.get('/subs', list)
+router.get('/subs', listAllSubsCache, list)
 router.get('/sub/:slug', read)
 router.put('/sub/:slug', authCheck, adminCheck, update)
 router.delete('/sub/:slug', authCheck, adminCheck, remove)

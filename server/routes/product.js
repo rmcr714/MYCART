@@ -4,6 +4,7 @@ const router = express.Router()
 
 //middlewares
 import { authCheck, adminCheck } from '../middlewares/auth.js'
+import { listAllCache } from '../middlewares/productCache.js'
 
 //controller
 import {
@@ -22,7 +23,7 @@ import {
 //routes
 router.post('/product', authCheck, adminCheck, create)
 router.get('/products/total', productsCount) //Get the total number of products, useful for pagination
-router.get('/products/:count', listAll) //return only count number of  products
+router.get('/products/:count', listAllCache, listAll) //return only count number of  products
 router.delete('/product/:slug', authCheck, adminCheck, remove) //remove a product
 router.get('/product/:slug', read) //read a product based on slug
 router.put('/product/:slug', authCheck, adminCheck, update) //update the product
