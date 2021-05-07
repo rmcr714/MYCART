@@ -203,6 +203,7 @@ export const productStar = async (req, res) => {
               comment: comment,
               postedBy: user._id,
               name: user.name,
+              email: user.email,
             },
           },
         },

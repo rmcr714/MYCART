@@ -74,7 +74,7 @@ const Tracking = ({ match }) => {
                       {' '}
                       <strong>Estimated Delivery time:</strong> <br />
                       {order.orderStatus === 'Completed'
-                        ? `Delivered at ${order.deliveredAt.substring(0, 10)}`
+                        ? `Delivered on ${order.deliveredAt.substring(0, 10)}`
                         : ' A week from now'}
                     </div>
                     <div className='col'>

@@ -31,14 +31,18 @@ const ReviewsCard = ({ ratings }) => {
                       <Rating value={review.star} />
                       <p>{review.createdAt.substring(0, 10)}</p>
                       <p>{review.comment}</p>
-                      {user && user.name === review.name ? (
+                      {user && user.email === review.email ? (
                         <p className='text-right'>
                           {' '}
                           <strong>Your Review</strong>
                         </p>
                       ) : (
                         <p className='text-right'>
-                          <strong>{review.name}</strong>
+                          {review.name === null ? (
+                            <strong>{review.email}</strong>
+                          ) : (
+                            <strong>{review.name}</strong>
+                          )}
                         </p>
                       )}
                     </div>

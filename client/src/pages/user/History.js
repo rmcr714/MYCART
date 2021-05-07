@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import UserNav from '../../components/nav/UserNav'
 import { getUserOrders } from '../../functions/user'
 import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 import Invoice from '../../components/order/Invoice'
 import { PDFDownloadLink } from '@react-pdf/renderer'
@@ -94,7 +95,9 @@ const History = ({ history }) => {
               </div>
             </div>
             <div className='col-md-4'>
-              <h5>{product.product.title}</h5>
+              <Link to={`/product/${product.product.slug}`}>
+                <h5>{product.product.title}</h5>
+              </Link>
               <p className='mb-2 text-muted  medium'>
                 Color:{product.product.color}
               </p>

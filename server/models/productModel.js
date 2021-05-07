@@ -76,6 +76,7 @@ const productSchema = new mongoose.Schema(
           {
             star: Number,
             name: String,
+            email: String,
             postedBy: { type: ObjectId, ref: 'User' },
             comment: String,
           },
