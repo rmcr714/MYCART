@@ -3,6 +3,8 @@ import User from '../models/userModel.js'
 import Product from '../models/productModel.js'
 import Coupon from '../models/couponModel.js'
 import Order from '../models/orderModel.js'
+import oAuth2Client from '../oAuth2/oAuthInit.js'
+import nodemailer from 'nodemailer'
 
 //@desc  save cart data in cart collection
 //@route POST /api/user/cart
@@ -177,17 +179,17 @@ export const applyCouponToUserCart = async (req, res) => {
 //@access private
 export const createOrder = async (req, res) => {
   try {
-    const {
-      shippingAddress,
-      paymentMethod,
-      totalPrice,
-      couponApplied,
-    } = req.body.order
+    const { shippingAddress, paymentMethod, totalPrice, couponApplied } =
+      req.body.order
     const paymentIntent = req.body.order.stripeResponse.paymentIntent
     const user = await User.findOne({ email: req.user.email }).exec()
     let { products, couponCode } = await Cart.findOne({
       orderedBy: user._id,
     }).exec()
+    let cart = await Cart.findOne({ orderedBy: user._id })
+      .populate('products.product')
+      .populate('orderedBy')
+      .exec()
 
     let newOrder = await Order({
       products: products,
@@ -211,6 +213,181 @@ export const createOrder = async (req, res) => {
     })
 
     let updated = await Product.bulkWrite(bulkOption, {})
+    const sendmail = async () => {
+      console.log('running sendmail')
+      try {
+        const accessToken = await oAuth2Client.getAccessToken()
+        const transport = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            type: 'OAuth2',
+            user: 'tiwari136@gmail.com',
+            clientId: process.env.CLIENT_ID,
+            clientSecret: process.env.CLIENT_SECRET,
+            refreshToken: process.env.REFRESH_TOKEN,
+            accessToken: accessToken,
+          },
+        })
+        const mailOptions = {
+          from: 'tiwari136@gmail.com',
+          to: req.user.email,
+          subject: 'Your Order has been placed',
+          text: 'Gmail api test1',
+          html: `<!DOCTYPE html>
+            <html>
+            <head>
+            <title>Page Title</title>
+            <style>
+            
+            .header {
+            background-color: #87CEFA;
+            color:white,
+            }
+            </style>
+            </head>
+            <body>
+            <table>
+            <tr style = 'background-color: #87CEFA;color:white'>
+            <td colspan="7"><h2>MY CART</h2> &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp; &nbsp;&nbsp;   &nbsp;&nbsp;  &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp; &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp; &nbsp;&nbsp;   &nbsp;&nbsp;  &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp; &nbsp;&nbsp;   &nbsp;&nbsp;  &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp; &nbsp;&nbsp;   &nbsp;&nbsp;  &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp; &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;       </td>
+            <td><h3>Order Placed</h3></td></tr>
+            
+            <tr>
+            
+            <td> &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   </td>
+            <td>    </td>
+            
+            <td>hi <b> ${
+              cart.orderedBy.name ? cart.orderedBy.name : cart.orderedBy.email
+            }</b>&nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp; &nbsp;&nbsp;   &nbsp;&nbsp;  &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;                </td>
+            <td><small>order placed on </small><b>${newOrder.createdAt}</b></td>
+            
+            
+            </tr>
+            <tr>
+            
+            <td> &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   </td>
+            <td>    </td>
+            
+            <td><small>Your order has been successfully placed</small>&nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp; &nbsp;&nbsp;   &nbsp;&nbsp;  &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp; &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;      </td>
+            <td><small>order Id: </small><b>${`OD` + newOrder._id}</b></td>
+            </tr>
+            
+            
+            <tr>
+            <td>    </td>
+            <td>    </td>
+            <td>
+            
+            <h2>Delivery Address</h2>
+            <p>${newOrder.shippingAddress.firstName}<br> ${
+            newOrder.shippingAddress.address
+          }<br>${newOrder.shippingAddress.city}<br>${
+            newOrder.shippingAddress.zip
+          }</p>
+            <button style='background-color: #FF7F50;border-radius:20px'><a href = 'https://mycart-ecommerce-app.herokuapp.com/user/history' style = 'color:white;'><h4>Manage your Orders</h4> </a></button>
+            </td>
+      <td><div style="text-align:center">
+  <h1>Order Status</h1>
+  <span style ="height: 25px;
+  width: 25px;
+  background-color: green;
+  border-radius: 50%;
+  display: inline-block;"></span><small>Placed</small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <span style ="height: 25px;
+  width: 25px;
+  background-color: gray;
+  border-radius: 50%;
+  display: inline-block;"></span><small>Packed</small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <span style ="height: 25px;
+  width: 25px;
+  background-color: gray;
+  border-radius: 50%;
+  display: inline-block;"></span><small>shipped</small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <span style ="height: 25px;
+  width: 25px;
+  background-color: gray;
+  border-radius: 50%;
+  display: inline-block;"></span><small>Delivered</small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</div></td>
+      </tr>
+      <tr>
+      <td></td>
+      </tr>
+            </table>
+            <hr/>
+            <h3>Your Orders</h3>
+            <table>
+            ${cart.products.map(
+              (product) =>
+                `<tr>
+                  <td>
+                    <img
+                      src=${product.product.images[0].url}
+                      alt='Trulli'
+                      width='150'
+                      height='80'
+                    />
+                  </td>
+                  <td>
+                  ${product.product.title}
+                    <br />
+                    Delivery: In the next 7 days(tentative)
+                    <br />
+                    Seller: Anurag electronics
+                    <br />
+                    Qty:${product.count}
+                  </td>
+                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                  <td>
+                    <b> $${product.product.price}</b>
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                  </td>
+                </tr>
+                `
+            )}
+            <tr>
+                  <td>
+                    <hr />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <b>
+                      <h3>Total Price to be paid: $${
+                        newOrder.totalPrice
+                      } only</h3>
+                    </b>
+                  </td>
+                </tr>
+            
+            
+            </table>
+            <br/>
+            <br/>
+            <h2>Thanks for shopping with us!!</h2>
+            <small>For any queries contact our customer support 24x7<small>
+            
+            
+            
+            
+            </body>
+            </html>
+            
+            `,
+        }
+        const result = await transport.sendMail(mailOptions)
+        return result
+      } catch (err) {
+        return err
+      }
+    }
+
+    sendmail()
+      .then((result) => console.log('email is sent successfully', result))
+      .catch((err) => console.log(err.message))
 
     res.json({ ok: true })
   } catch (err) {
@@ -335,14 +512,15 @@ export const cashOnDelivery = async (req, res) => {
     console.log(shippingAddress, paymentMethod, couponApplied)
 
     const user = await User.findOne({ email: req.user.email }).exec()
-    let {
-      products,
-      couponCode,
-      totalAfterDiscount,
-      cartTotal,
-    } = await Cart.findOne({
-      orderedBy: user._id,
-    }).exec()
+    let { products, couponCode, totalAfterDiscount, cartTotal } =
+      await Cart.findOne({
+        orderedBy: user._id,
+      }).exec()
+
+    let cart = await Cart.findOne({ orderedBy: user._id })
+      .populate('products.product')
+      .populate('orderedBy')
+      .exec()
 
     let newOrder = await Order({
       products: products,
@@ -369,6 +547,172 @@ export const cashOnDelivery = async (req, res) => {
     })
 
     let updated = await Product.bulkWrite(bulkOption, {})
+
+    const sendmail = async () => {
+      console.log('running sendmail')
+      try {
+        const accessToken = await oAuth2Client.getAccessToken()
+        const transport = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            type: 'OAuth2',
+            user: 'tiwari136@gmail.com',
+            clientId: process.env.CLIENT_ID,
+            clientSecret: process.env.CLIENT_SECRET,
+            refreshToken: process.env.REFRESH_TOKEN,
+            accessToken: accessToken,
+          },
+        })
+        const mailOptions = {
+          from: 'tiwari136@gmail.com',
+          to: req.user.email,
+          subject: 'Your Order has been successfully placed',
+          text: 'Gmail api test1',
+          html: `<!DOCTYPE html>
+            <html>
+            <head>
+            <title>Page Title</title>
+            <style>
+            
+            .header {
+            background-color: #87CEFA;
+            color:white,
+            }
+            </style>
+            </head>
+            <body>
+            <table>
+            <tr style = 'background-color: #87CEFA;color:white'>
+            <td colspan="7"><h2>MY CART</h2> &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp; &nbsp;&nbsp;   &nbsp;&nbsp;  &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp; &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp; &nbsp;&nbsp;   &nbsp;&nbsp;  &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp; &nbsp;&nbsp;   &nbsp;&nbsp;  &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp; &nbsp;&nbsp;   &nbsp;&nbsp;  &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp; &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;       </td>
+            <td><h3>Order Placed</h3></td></tr>
+            
+            <tr>
+            
+            <td> &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   </td>
+            <td>    </td>
+            
+            <td>hi <b> ${
+              cart.orderedBy.name ? cart.orderedBy.name : cart.orderedBy.email
+            }</b>&nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp; &nbsp;&nbsp;   &nbsp;&nbsp;  &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;                </td>
+            <td><small>order placed on:  </small><b>${
+              newOrder.createdAt
+            }</b></td>
+            </tr>
+            <tr>
+            <td> &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   </td>
+            <td>    </td>
+            <td><small>Your order has been successfully placed</small>&nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp; &nbsp;&nbsp;   &nbsp;&nbsp;  &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp; &nbsp;&nbsp;   &nbsp;&nbsp;   &nbsp;&nbsp;      </td>
+            <td><small>order Id: </small><b>${`OD` + newOrder._id}</b></td>
+            </tr>
+            <tr>
+            <td>    </td>
+            <td>    </td>
+            <td>
+            <h2>Delivery Address</h2>
+            <p>${newOrder.shippingAddress.firstName}<br> ${
+            newOrder.shippingAddress.address
+          }<br>${newOrder.shippingAddress.city}<br>${
+            newOrder.shippingAddress.zip
+          }</p>
+          <button style='background-color: #FF7F50;border-radius:20px'><a href = 'https://mycart-ecommerce-app.herokuapp.com/user/history' style = 'color:white;'><h4>Manage your Orders</h4> </a></button>
+          </td>
+    <td><div style="text-align:center">
+<h1>Order Status</h1>
+<span style ="height: 25px;
+width: 25px;
+background-color: green;
+border-radius: 50%;
+display: inline-block;"></span><small>Placed</small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style ="height: 25px;
+width: 25px;
+background-color: gray;
+border-radius: 50%;
+display: inline-block;"></span><small>Packed</small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style ="height: 25px;
+width: 25px;
+background-color: gray;
+border-radius: 50%;
+display: inline-block;"></span><small>shipped</small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style ="height: 25px;
+width: 25px;
+background-color: gray;
+border-radius: 50%;
+display: inline-block;"></span><small>Delivered</small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</div></td>
+    </tr>
+    <tr>
+    <td></td>
+    </tr>
+          </table>
+          <hr/>
+          <h3>Your Orders</h3>
+            <table>
+            ${cart.products.map(
+              (product) =>
+                `<tr>
+                  <td>
+                    <img
+                      src=${product.product.images[0].url}
+                      alt='Trulli'
+                      width='150'
+                      height='80'
+                    />
+                  </td>
+                  <td>
+                  ${product.product.title}
+                    <br />
+                    Delivery: In the next 7 days(tentative)
+                    <br />
+                    Seller: Anurag electronics
+                    <br />
+                    Qty:${product.count}
+                  </td>
+                  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                  <td>
+                  <b> $${product.product.price}</b>
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                  </td>
+                </tr>
+                `
+            )}
+            <tr>
+                  <td>
+                    <hr />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <b>
+                      <h3>Total Price to be paid: $${
+                        newOrder.totalPrice
+                      } only</h3>
+                    </b>
+                  </td>
+                </tr>
+            </table>
+            <br/>
+            <br/>
+            <h2>Thanks for shopping with us!!</h2>
+            <small>For any queries contact our customer support 24x7<small>
+            </body>
+            </html>
+            
+            `,
+        }
+        const result = await transport.sendMail(mailOptions)
+
+        return result
+      } catch (err) {
+        return err
+      }
+    }
+
+    sendmail()
+      .then((result) => console.log('email is sent successfully', result))
+      .catch((err) => console.log(err.message))
 
     res.json({ ok: true })
   } catch (err) {
