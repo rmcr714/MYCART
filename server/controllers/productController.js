@@ -462,3 +462,29 @@ export const searchFilters = async (req, res) => {
     await handleStars(req, res, stars, price, category, brand)
   }
 }
+
+//@desc  Autocomplete product searches in search bar
+//@route POST api/search
+//@access public
+export const autocompleteSearch = async (req, res) => {
+  try {
+    const { searchText } = req.body
+
+    let result = await Product.aggregate([
+      {
+        $search: {
+          autocomplete: {
+            query: searchText,
+            path: 'title',
+            // fuzzy: {
+            //   maxEdits: 0,
+            // },
+          },
+        },
+      },
+    ])
+    res.send(result)
+  } catch (err) {
+    res.status(400).send('bad query')
+  }
+}

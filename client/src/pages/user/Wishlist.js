@@ -3,7 +3,7 @@ import UserNav from '../../components/nav/UserNav'
 import { getWishList, removeWishList } from '../../functions/user'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { LoadingOutlined } from '@ant-design/icons'
+import { LoadingOutlined, ClockCircleOutlined } from '@ant-design/icons'
 import '../css/user/wishlist.css'
 import _ from 'lodash'
 import { useDispatch } from 'react-redux'
@@ -117,16 +117,24 @@ const Wishlist = () => {
                         <br />
                         <br />
 
-                        <button
-                          type='button'
-                          class='btn btn-raised'
-                          style={{ backgroundColor: '#ff9f00' }}
-                          onClick={() => {
-                            handleAddToCart(product)
-                          }}
-                        >
-                          Add to cart
-                        </button>
+                        {product.quantity > 0 ? (
+                          <button
+                            type='button'
+                            class='btn btn-raised'
+                            style={{ backgroundColor: '#ff9f00' }}
+                            onClick={() => {
+                              handleAddToCart(product)
+                            }}
+                          >
+                            Add to cart
+                          </button>
+                        ) : (
+                          <a>
+                            <ClockCircleOutlined className='text-danger' />
+                            <br />
+                            currently out of stock
+                          </a>
+                        )}
                       </div>
                     </div>
                   </div>

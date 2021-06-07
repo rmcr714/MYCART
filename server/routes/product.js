@@ -18,6 +18,7 @@ import {
   productStar,
   listRelated,
   searchFilters,
+  autocompleteSearch,
 } from '../controllers/productController.js'
 
 //routes
@@ -48,5 +49,8 @@ router.post('/zip', async (req, res) => {
     .then(({ data }) => res.json(data))
     .catch((error) => console.log(error.response))
 })
+
+//making an autocomplete search
+router.post('/search', autocompleteSearch)
 
 export default router
